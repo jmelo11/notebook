@@ -235,9 +235,12 @@ setup(
 
 With all files in hand, we begin compiling. In this case, we assume that the files come from the repository mentioned at the beginning. The commands assume the following folder structure:
 
-<p align="center">
-    <img src="folders.png" alt="Folder Structure">
-</p>
+```{image} ../images/folders.png
+:alt: Folder Structure
+:class: bg-primary mb-1
+:width: 200px
+:align: center
+```
 
 The steps to install everything are as follows:
 
@@ -297,9 +300,12 @@ for date, cashflow in bond.cashflows().items():
 
 ```
 
-<p align="center">
-    <img src="output.png" alt="Output">
-</p>
+```{image} ../images/output.png
+:alt: Output
+:class: bg-primary mb-1
+:width: 200px
+:align: center
+```
 
 And that's it! Our module is now available in a high-level language.
 
