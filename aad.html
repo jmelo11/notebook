@@ -1,0 +1,640 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Automatic Differentiation &#8212; QPacifico</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'aad';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Jose Pedro Melo Olivares" href="cv.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="QPacifico - Home"/>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="QPacifico - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Welcome to notebook
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="cv.html">Jose Pedro Melo Olivares</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Automatic Differentiation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/jmelo11/notebook" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/jmelo11/notebook/issues/new?title=Issue%20on%20page%20%2Faad.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/aad.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Automatic Differentiation</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#differentiation-techniques">Differentiation Techniques</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#before-we-begin-a-reference-function">Before We Begin: A Reference Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#manual-differentiation">Manual Differentiation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-differentiation">Numerical Differentiation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Automatic Differentiation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-does-ad-work-in-practice">How Does AD Work in Practice?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusions">Conclusions</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="automatic-differentiation">
+<h1>Automatic Differentiation<a class="headerlink" href="#automatic-differentiation" title="Link to this heading">#</a></h1>
+<p>I’ve wanted to write something about this technique for a while (and by doing so, I also deepen my understanding of it) to automatically compute derivatives in code. In the financial world, derivatives manifest in many ways, such as sensitivities to market variables, so being able to compute them accurately and quickly is of great value for risk management.</p>
+<section id="differentiation-techniques">
+<h2>Differentiation Techniques<a class="headerlink" href="#differentiation-techniques" title="Link to this heading">#</a></h2>
+<p>Over the years, several differentiation techniques have emerged. In this document, I will discuss three:</p>
+<ul class="simple">
+<li><p>Manual differentiation</p></li>
+<li><p>Numerical differentiation</p></li>
+<li><p>Automatic differentiation</p></li>
+</ul>
+<p>Since we will be reviewing different techniques that aim for the same objective, it would be good to have an idea of their differences and the implications of using one over the other. For each technique, I will comment on the following points, which, in my experience, have been relevant when choosing a method:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Integration</p></th>
+<th class="head"><p>Performance and Accuracy</p></th>
+<th class="head"><p>Compatibility</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Here, we analyze what it takes to integrate the technique into an existing codebase. We assess how <em>plug-and-play</em> it is when using it.</p></td>
+<td><p>In practical terms, how fast the implementation runs and how good the computed derivative is.</p></td>
+<td><p>Similar, but not identical to the <em>scope</em> of integration, this evaluates how well this tool works with other tools in our project.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="before-we-begin-a-reference-function">
+<h2>Before We Begin: A Reference Function<a class="headerlink" href="#before-we-begin-a-reference-function" title="Link to this heading">#</a></h2>
+<p>For all the following examples, we will use the following function as a reference:</p>
+<p><span class="math notranslate nohighlight">\(f(x) = 2x^2+2\cos{x}\)</span></p>
+<p>Where we know that the analytical derivative is:</p>
+<p><span class="math notranslate nohighlight">\(f'(x) = 4x-2\sin{x}\)</span></p>
+<p>A reference implementation in Rust would be:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">f64</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">cos</span><span class="p">();</span>
+<span class="w">    </span><span class="n">g</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="manual-differentiation">
+<h2>Manual Differentiation<a class="headerlink" href="#manual-differentiation" title="Link to this heading">#</a></h2>
+<p>The first option is the most straightforward: manually differentiating our functions. If we consider the function from the beginning, it would suffice to implement a specialized function to compute the derivative.</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">der_f</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">f64</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">der_g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">der_z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">sin</span><span class="p">();</span>
+<span class="w">    </span><span class="n">der_g</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">der_z</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There’s no magic here—it simply requires the developer to manually differentiate every line involving a mathematical operation. Looking at it through the <em>scopes</em> I initially outlined, we could expect:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Integration</p></th>
+<th class="head"><p>Performance and Accuracy</p></th>
+<th class="head"><p>Compatibility</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Very low integration capability. We cannot differentiate code without clear and exactly differentiable mathematical functions. This technique is only feasible as demonstrated in the previous case (1).</p></td>
+<td><p>The performance, assuming a good implementation, should be the best possible since we allow the compiler to optimize our code. Even though we need to run an extra function to compute the derivative, any method below also has additional computational costs.</p></td>
+<td><p>Since we are implementing a separate function, we should not encounter major compatibility issues with other libraries.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>(1) Some specialized compilers generate code that represents the derivatives of our functions—such as <em>clad</em> for the <em>clang</em> compiler—though I haven’t had the opportunity to try it.</p>
+</section>
+<section id="numerical-differentiation">
+<h2>Numerical Differentiation<a class="headerlink" href="#numerical-differentiation" title="Link to this heading">#</a></h2>
+<p>This is the traditional derivative method commonly used in finance. It essentially involves shocking the inputs of our function and observing how the outputs change. More precisely, we evaluate the derivative using a finite difference approximation:</p>
+<p><span class="math notranslate nohighlight">\(f'(x) = frac{f(x+h)-f(x)}{h}\)</span></p>
+<p>In terms of implementation, we would have something like:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">der_f</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">f64</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In this technique, we leverage the limit as <span class="math notranslate nohighlight">\(h \rightarrow 0\)</span>. The precision we seek depends on the discretization method we use. Generally, we can state:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Integration</p></th>
+<th class="head"><p>Performance and Accuracy</p></th>
+<th class="head"><p>Compatibility</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Easier integration. If we have a working implementation, we just adjust the inputs, rerun the function, and we’re done.</p></td>
+<td><p>The performance, relative to our initial implementation, literally doubles the computation time for each input we evaluate. In some applications, this is infeasible (very long computations). The accuracy depends on the choice of delta but is never exact.</p></td>
+<td><p>There should be no major compatibility issues with other tools since this simply involves running our code multiple times.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id1">
+<h2>Automatic Differentiation<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>Automatic differentiation (AD) is a technique widely used in machine learning (ML) libraries that allows us to compute derivatives as the program runs. Depending on the implementation, it can have low integration costs. Let’s explore it in more detail.</p>
+<section id="how-does-ad-work-in-practice">
+<h3>How Does AD Work in Practice?<a class="headerlink" href="#how-does-ad-work-in-practice" title="Link to this heading">#</a></h3>
+<p>Automatic differentiation is based on the <strong>chain rule</strong>, a fundamental calculus concept. If we recall, this rule states that we can reconstruct the derivative of a function as a composition of the derivatives of its sub-functions. More precisely, if we have a function <span class="math notranslate nohighlight">\(h(x) = f(g(x)) \)</span>, its derivative is:</p>
+<p><span class="math notranslate nohighlight">\(h'(x) = f'(g(x))g'(x)
+\)</span></p>
+<p>For example, the function <span class="math notranslate nohighlight">\(f(x) = 2x^2+2\cos{x} \)</span>, whose derivative is <span class="math notranslate nohighlight">\(f'(x) = 4x+2\sin{x} \)</span>, can be rewritten as:</p>
+<p><span class="math notranslate nohighlight">\(h(x) = x^2, \quad h'(x) = 2x
+\)</span></p>
+<p><span class="math notranslate nohighlight">\(u(x) = \cos{x}, \quad u'(x) = -\sin{x}
+\)</span></p>
+<p><span class="math notranslate nohighlight">\(g(x) = g(h(x)) = 2h(x) = 2x^2, \quad g'(x) = g'(h(x))h'(x) = 2 \cdot 2x = 4x
+\)</span></p>
+<p><span class="math notranslate nohighlight">\(z(x) = z(u(x)) = 2\cos{x}, \quad z'(x) = z'(u(x))u'(x) = -2\sin{x}
+\)</span></p>
+<p><span class="math notranslate nohighlight">\(f(x) = g(x) + z(x) = 2x^2+2\cos{x}, \quad f'(x) = g'(x)+z'(x) = 4x-2\sin{x}
+\)</span></p>
+<p>This allows us to create a computation tree, where the lower nodes represent basic functions like <span class="math notranslate nohighlight">\(h(x) \)</span> and <span class="math notranslate nohighlight">\(u(x) \)</span>, for which we have exact derivatives.</p>
+</section>
+<section id="conclusions">
+<h3>Conclusions<a class="headerlink" href="#conclusions" title="Link to this heading">#</a></h3>
+<p>We’ve explored various techniques for computing derivatives, highlighting the importance of choosing the right one for a given problem. In finance, calculating sensitivities to market and business variables is crucial. Without an efficient method, some solutions (e.g., XVA) become impractical.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For further reading:</p>
+<ul class="simple">
+<li><p><strong>The Art of Differentiating Computer Programs / Uwe Naumann</strong></p></li>
+<li><p><strong>Evaluating Derivatives: Principles and Techniques of Algorithmic Differentiation / Andreas Griewank &amp; Andrea Walther</strong></p></li>
+</ul>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="cv.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Jose Pedro Melo Olivares</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#differentiation-techniques">Differentiation Techniques</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#before-we-begin-a-reference-function">Before We Begin: A Reference Function</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#manual-differentiation">Manual Differentiation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numerical-differentiation">Numerical Differentiation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Automatic Differentiation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-does-ad-work-in-practice">How Does AD Work in Practice?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusions">Conclusions</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By José Melo
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
