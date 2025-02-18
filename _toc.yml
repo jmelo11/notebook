@@ -4,6 +4,5 @@
 format: jb-book
 root: intro
 chapters:
-  - file: Computing
-    sections:
-      - file: aad
+  - file: cv
+  - file: aad
