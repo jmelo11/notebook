@@ -6,7 +6,7 @@ title: "CV - Jose Melo"
 author: "Jose Melo"
 ---
 
-# Jose Pedro Melo Olivares
+# My CV
 
 **Location:** Madrid, Spain  
 **Phone:** +34 614 377 868
@@ -94,8 +94,8 @@ author: "Jose Melo"
 
 ## Publications & Research
 
-- **Physics-Informed Neural Networks for XVA Pricing (Master’s Thesis, in progress)**  
-  Applying deep learning to XVA pricing to improve computational accuracy and efficiency.
+- **Machine learning techniques for derivative pricing (Master’s Thesis, in progress)**  
+  Applying deep learning models to improve derivative pricing accuracy and reduce computational time.
 
 ---
 
@@ -103,7 +103,7 @@ author: "Jose Melo"
 
 - **Programming:** Python, C++, Rust  
 - **Quantitative Methods:** Stochastic Calculus, PDEs, Monte Carlo Simulation, Numerical Analysis  
-- **Financial Modeling:** XVA, Multicurrency SDEs, AAD  
+- **Financial Modeling:** XVA, SDEs, AAD  
 - **Tools:** Git, AWS, Docker, Tableau
 
 ---
