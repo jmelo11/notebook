@@ -2,11 +2,11 @@
 jupyter:
   jupytext:
     formats: ipynb,md
-title: "Pybind11: First Steps"
+title: "Pybind11 Tutorial"
 author: "Jose Pedro Melo Olivares"
 ---
 
-# Pybind11: First Steps
+# Pybind11 Tutorial
 
 For some time now, our team has been developing financial applications, and we frequently encounter the need to integrate them with other tools written in different languages. While REST APIs are very useful for integration, C++ (the language we use for these tools) doesn’t offer many great integration tools. A good alternative is to translate C++ into another language and work from there. In this context, **pybind11** is a great option because it allows us to seamlessly migrate C++ code to Python. Below...
 
@@ -78,7 +78,7 @@ namespace FinLib {
 #endif 
 ```
 
-## module.cpp
+## module.cpp file
 
 To expose our C++ library in Python, we use **pybind11**:
 
@@ -113,7 +113,7 @@ PYBIND11_MODULE(FinLib, m) {
 }
 ```
 
-## setup.py
+## setup.py file
 
 To compile and install our module:
 
