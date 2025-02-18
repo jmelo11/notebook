@@ -366,11 +366,17 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-objective">Tutorial Objective</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">Setup</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-library">C++ Library</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-cpp-file">module.cpp file</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup-py-file">setup.py file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-cpp-file">module.cpp file</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#py-enum">py::enum_</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#py-class">py::class_</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inheritance">Inheritance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#def">.def</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-setup-py-file">The setup.py file</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-example">Usage Example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results-and-conclusions">Results and Conclusions</a></li>
 </ul>
             </nav>
         </div>
@@ -384,10 +390,10 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="pybind11-tutorial">
 <h1>Pybind11 Tutorial<a class="headerlink" href="#pybind11-tutorial" title="Link to this heading">#</a></h1>
-<p>For some time now, our team has been developing financial applications, and we frequently encounter the need to integrate them with other tools written in different languages. While REST APIs are very useful for integration, C++ (the language we use for these tools) doesn’t offer many great integration tools. A good alternative is to translate C++ into another language and work from there. In this context, <strong>pybind11</strong> is a great option because it allows us to seamlessly migrate C++ code to Python. Below…</p>
+<p>For some time now, our team has been developing financial applications, and we frequently encounter the need to integrate them with other tools written in different languages. While REST APIs are very useful for integration, C++ (the language we use for these tools) doesn’t offer many great integration tools. A good alternative is to translate C++ into another language and work from there. In this context, <strong>pybind11</strong> is a great option because it allows us to seamlessly migrate C++ code to Python. Below is a simple tutorial on how to use <strong>pybind11</strong> to expose C++ code in Python.</p>
 <section id="tutorial-objective">
 <h2>Tutorial Objective<a class="headerlink" href="#tutorial-objective" title="Link to this heading">#</a></h2>
-<p>The assumption here is that if we’re attempting a language migration, it’s because we want to use tools available in another language that can help our development. In this case, the core logic of our application is already implemented, and we just need a framework to easily move between languages. The beauty of <strong>pybind11</strong> is that it provides a simple framework for this purpose. There are other tools that can do the same (such as SWIG), each with its own pros and cons, but they will not be covered in t…</p>
+<p>The assumption here is that if we’re attempting a language migration, it’s because we want to use tools available in another language that can help our development. In this case, the core logic of our application is already implemented, and we just need a framework to easily move between languages. The beauty of <strong>pybind11</strong> is that it provides a simple framework for this purpose. There are other tools that can do the same (such as SWIG), each with its own pros and cons, but they will not be covered in this tutorial.</p>
 </section>
 <section id="setup">
 <h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h2>
@@ -451,10 +457,17 @@
 <span class="cp">#endif </span>
 </pre></div>
 </div>
+<p>The relevant part of this script is not what it does or it’s methods, but what we want to expose in Python. In this case we have:</p>
+<ul class="simple">
+<li><p>A class <code class="docutils literal notranslate"><span class="pre">Bond</span></code> with a method <code class="docutils literal notranslate"><span class="pre">cashflows</span></code>.</p></li>
+<li><p>A function <code class="docutils literal notranslate"><span class="pre">pv</span></code> that calculates the present value of cashflows.</p></li>
+<li><p>In this example, we can see that the enum <code class="docutils literal notranslate"><span class="pre">Frequency</span></code> is at the root of the namespace <code class="docutils literal notranslate"><span class="pre">FinLib</span></code>.</p></li>
+</ul>
+<p>The implementation is in the file <code class="docutils literal notranslate"><span class="pre">mylibrary.hpp</span></code>, which is not relevant for this tutorial but readers can find it in the repository.</p>
 </section>
 <section id="module-cpp-file">
 <h2>module.cpp file<a class="headerlink" href="#module-cpp-file" title="Link to this heading">#</a></h2>
-<p>To expose our C++ library in Python, we use <strong>pybind11</strong>:</p>
+<p>Once our C++ library is written and working, we need to provide instructions to <strong>pybind11</strong> so that it can interpret our classes and present them in Python as desired. We do this by writing a small source file (the filename is not important).</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;../library/mylibrary.hpp&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pybind11/pybind11.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pybind11/stl.h&gt;</span>
@@ -485,10 +498,81 @@
 <span class="p">}</span>
 </pre></div>
 </div>
+<p>First, let’s highlight the include headers:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">include</span> <span class="pre">&lt;pybind11/pybind11.h&gt;</span></code>: In this tutorial, we install our module with setuptools, so it is not necessary to download the pybind11 repository manually. In fact, installing the Python package automatically provides the header files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include</span> <span class="pre">&lt;pybind11/stl.h&gt;</span></code>: To automatically convert standard library types (in our case, the map behind Cashflows), this header must be included</p></li>
+</ul>
+<p>The pybind11 syntax is fairly self-explanatory, but here’s a brief walkthrough. First, note that the module is contained within the <code class="docutils literal notranslate"><span class="pre">PYBIND11_MODULE</span></code> macro. Its arguments are the name we want to give our library – FinLib in this example – and a parameter of type <code class="docutils literal notranslate"><span class="pre">py::module_</span></code>, which serves as the entry point for our module.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The name of our module must be provided without quotes and must be identical to the one defined in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>, which we will cover next.</p>
+</div>
+<section id="py-enum">
+<h3>py::enum_<a class="headerlink" href="#py-enum" title="Link to this heading">#</a></h3>
+<p>This template is used to export enumerations to Python. As template parameters, we use the same enum defined in our library. Here are some useful notes:</p>
+<ul class="simple">
+<li><p>The names we use in our definitions – not only for enums but for all pybind11 methods – do not necessarily need to match the real function names. For example, one could define:</p></li>
+</ul>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">py</span><span class="o">::</span><span class="n">enum_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Frecuencia&quot;</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Monthly&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Monthly</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Quarterly&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Quarterly</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Semiannual&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Semiannual</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Annual&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Annual</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Once&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Once</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="n">export_values</span><span class="p">();</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>When using plain enums (and not enum class), it is necessary to invoke export_values() at the end of the definition because Python requires these enums not to be implicitly convertible to other types.</p></li>
+</ul>
 </section>
-<section id="setup-py-file">
-<h2><a class="reference external" href="http://setup.py">setup.py</a> file<a class="headerlink" href="#setup-py-file" title="Link to this heading">#</a></h2>
-<p>To compile and install our module:</p>
+<section id="py-class">
+<h3>py::class_<a class="headerlink" href="#py-class" title="Link to this heading">#</a></h3>
+<p>It is useful to discuss py::init, inheritance, and the .def method for classes, as these are central to exporting classes. py::init is the constructor for our classes. It is a template that takes the parameters of our C++ class and converts them into Python types. For successful compilation, the types must be previously defined as a class, enum, or type. You can also pass a lambda function to generate a specialized constructor. For example:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Specialized constructor example (hiding the previous definition as duplicate definitions are not allowed)</span>
+<span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Bond&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="n">py</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">([](</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="w"> </span><span class="n">endDate</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="w"> </span><span class="n">freq</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">notional</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">rate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="p">(</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="n">endDate</span><span class="p">,</span><span class="w"> </span><span class="n">freq</span><span class="p">,</span><span class="w"> </span><span class="n">notional</span><span class="p">,</span><span class="w"> </span><span class="n">rate</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;cashflows&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">::</span><span class="n">cashflows</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="inheritance">
+<h3>Inheritance<a class="headerlink" href="#inheritance" title="Link to this heading">#</a></h3>
+<p>It is also possible to define which objects inherit from others by specifying them in the template parameters of each class.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Base class</span>
+<span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Bond&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="p">...</span><span class="o">&gt;</span>
+<span class="w">       </span>
+<span class="c1">// Derived class</span>
+<span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Deposit</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Deposit&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="n">py</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>This is practical as it saves us from writing all the base class methods in the derived class.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>If we do not define the inheritance, our code will compile, but Python will not be able to associate the derived classes with the base.</p>
+</div>
+</section>
+<section id="def">
+<h3>.def<a class="headerlink" href="#def" title="Link to this heading">#</a></h3>
+<p>Finally, the .def method allows us to define functions, whether they belong to a class or are standalone (inline or static functions). A particularly interesting case is when we have overloaded functions:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">m</span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;cashflowPV&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">py</span><span class="o">::</span><span class="n">overload_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Cashflows</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">pv</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;Calculates the present value of a set of cashflows&quot;</span><span class="p">);</span>
+<span class="n">m</span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;bondPV&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">py</span><span class="o">::</span><span class="n">overload_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">pv</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;Calculates the present value of a bond&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>In this case, we must provide pybind11 with the tools to determine which method to call. We do this using py::overload_cast, a function that matches based on the types of the function arguments.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Python does not support method overloading since it lacks type information to determine which function to use. Therefore, we must define the functions with different names.</p>
+</div>
+</section>
+</section>
+<section id="the-setup-py-file">
+<h2>The <a class="reference external" href="http://setup.py">setup.py</a> file<a class="headerlink" href="#the-setup-py-file" title="Link to this heading">#</a></h2>
+<p>This file essentially contains the instructions to compile module.cpp correctly. It is necessary to provide the header file paths and the compiled library path, just as you would in any C++ project. As mentioned at the beginning, for everything to work properly, you must also have the pybind11 library installed in Python (which you can do via pip).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pybind11.setup_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pybind11Extension</span><span class="p">,</span> <span class="n">build_ext</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">setuptools</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -520,18 +604,28 @@
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
-<p>Run the following commands:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>library/build
-cmake<span class="w"> </span>..
+<p>With all files in hand, we begin compiling. In this case, we assume that the files come from the repository mentioned at the beginning. The commands assume the following folder structure:</p>
+<p align="center">
+    <img src="folders.png" alt="Folder Structure">
+</p>
+<p>The steps to install everything are as follows:</p>
+<ol class="arabic">
+<li><p>CMake:
+Create a build directory inside the library folder and navigate to that directory in the terminal. Then execute:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>..
 cmake<span class="w"> </span>--build<span class="w"> </span>.<span class="w"> </span>--config<span class="w"> </span>Release
 </pre></div>
 </div>
-<p>Then install the module:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>module
-pip<span class="w"> </span>setup.py<span class="w"> </span>build<span class="w"> </span>--force
+<p>This will run CMake and compile our initial library (FinLib). If everything goes well, you should see a file libFinLib.a on Mac/Linux or FinLib.lib on Windows.</p>
+</li>
+<li><p>Once the library is compiled, navigate to the module directory and execute from the console:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>setup.py<span class="w"> </span>build<span class="w"> </span>--force
 pip<span class="w"> </span>setup.py<span class="w"> </span>install
 </pre></div>
 </div>
+<p>Alternatively, you can use <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.</span></code>, but during development it is common to compile several times to ensure that the module is fully recompiled and that changes are reflected correctly.</p>
+</li>
+</ol>
 </section>
 <section id="usage-example">
 <h2>Usage Example<a class="headerlink" href="#usage-example" title="Link to this heading">#</a></h2>
@@ -550,9 +644,29 @@ pip<span class="w"> </span>setup.py<span class="w"> </span>install
 </pre></div>
 </div>
 </section>
-<section id="conclusion">
-<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
-<p>This tutorial introduced <strong>pybind11</strong> to expose C++ code in Python. If you’re interested in similar tools, consider <strong>SWIG</strong>, which works for languages like C# and JavaScript. You can explore the <strong>pybind11</strong> documentation for more advanced use cases.</p>
+<section id="results-and-conclusions">
+<h2>Results and Conclusions<a class="headerlink" href="#results-and-conclusions" title="Link to this heading">#</a></h2>
+<p>After installing the module in Python, you should be able to run Python scripts that use the library. Below is an example with some brief commentary:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Copiar</span>
+<span class="n">startDate</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">endDate</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="n">rate</span> <span class="o">=</span> <span class="mf">0.03</span>
+<span class="n">notional</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">frequency</span> <span class="o">=</span> <span class="n">FinLib</span><span class="o">.</span><span class="n">Semiannual</span>
+
+<span class="n">bond</span> <span class="o">=</span> <span class="n">FinLib</span><span class="o">.</span><span class="n">Bond</span><span class="p">(</span><span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">notional</span><span class="p">,</span> <span class="n">rate</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">date</span><span class="p">,</span> <span class="n">cashflow</span> <span class="ow">in</span> <span class="n">bond</span><span class="o">.</span><span class="n">cashflows</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>     
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Date:</span><span class="se">\t</span><span class="si">{d}</span><span class="s1">,  Cashflow:</span><span class="se">\t</span><span class="si">{c}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">cashflow</span><span class="p">))</span>
+
+</pre></div>
+</div>
+<p align="center">
+    <img src="output.png" alt="Output">
+</p>
+<p>And that’s it! Our module is now available in a high-level language.</p>
+<p>We have reached the end of the tutorial. As mentioned at the beginning, pybind11 is one of several tools designed to achieve interoperability between languages. For those interested in migrating between languages, I recommend exploring SWIG, which functions similarly and allows integration with languages such as C# or JavaScript, which can be useful for other applications. Additionally, you are invited to review the pybind11 documentation, as it offers other interesting features that we did not cover here, such as the ability to use Python types and libraries in C++ (the reverse of what we did here).</p>
 </section>
 </section>
 
@@ -615,11 +729,17 @@ pip<span class="w"> </span>setup.py<span class="w"> </span>install
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-objective">Tutorial Objective</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">Setup</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-library">C++ Library</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-cpp-file">module.cpp file</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup-py-file">setup.py file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-cpp-file">module.cpp file</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#py-enum">py::enum_</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#py-class">py::class_</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inheritance">Inheritance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#def">.def</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-setup-py-file">The setup.py file</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-example">Usage Example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results-and-conclusions">Results and Conclusions</a></li>
 </ul>
   </nav></div>
 
