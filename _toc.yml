@@ -6,3 +6,4 @@ root: intro
 chapters:
   - file: cv
   - file: aad
+  - file: pybind11
