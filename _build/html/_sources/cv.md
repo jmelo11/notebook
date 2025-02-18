@@ -6,7 +6,9 @@ title: "CV - Jose Melo"
 author: "Jose Melo"
 ---
 
-# My CV
+# About me
+
+## Jose Melo
 
 **Location:** Madrid, Spain  
 **Phone:** +34 614 377 868
@@ -14,37 +16,37 @@ author: "Jose Melo"
 
 ---
 
-## Summary
+### Summary
 
 - Extensive quantitative experience with 9+ years in the finance sector, specializing in stochastic modeling, numerical methods, and balance sheet management.
-- Proficient in Python, C++, and Rust for financial software development, including multicurrency SDEs, pricing engines, and automatic differentiation.
+- Proficient in Python, C++, and Rust for financial software development, including multi-risk SDEs, pricing engines, and automatic differentiation.
 
 ---
 
-## Education
+### Education
 
-### Universidad Carlos III de Madrid, Spain
+#### Universidad Carlos III de Madrid, Spain
 
 - **Master in Computational and Applied Mathematics**  
   *September 2024 – September 2025*
 
-### Universidad Adolfo Ibáñez, Chile
+#### Universidad Adolfo Ibáñez, Chile
 
 - **Master in Financial Engineering**  
   *March 2014 – January 2015*
 
-### Universidad Adolfo Ibáñez, Chile
+#### Universidad Adolfo Ibáñez, Chile
 
 - **Bachelor’s Degree in Business Administration**  
   *March 2009 – December 2013*
 
 ---
 
-## Career
+### Career
 
-### Itaú Corpbanca, Santiago, Chile
+#### Itaú Corpbanca, Santiago, Chile
 
-#### Sr. Product Owner FO  
+##### Sr. Product Owner FO  
 
 *January 2023 – Present*
 
@@ -53,14 +55,14 @@ author: "Jose Melo"
 - Developed an engine for P&L forecasting, achieving a 10% reduction in annual forecast volatility and improving accuracy significantly.
 - Designed a multi-threaded C++/Rust pricing library with AAD capabilities, processing balance sheet data in near real-time to enable 20% faster financial simulations.
 
-#### Sr. ALM Trader  
+##### Sr. ALM Trader  
 
 *July 2018 – January 2023*
 
 - Saved 6M USD by identifying unseen costs in IR and FX derivatives using Python-based XVA tools.
 - Managed a 1B USD liability bond portfolio and successfully executed the funding plan, maintaining the bank’s credit spread stability.
 
-#### ALM Trader  
+##### ALM Trader  
 
 *April 2014 – July 2018*
 
@@ -71,7 +73,7 @@ author: "Jose Melo"
 
 ---
 
-## Certifications & Courses
+### Certifications & Courses
 
 - **Certificate in Quantitative Finance (CQF)**, CQF Institute  
   Score: 93%  
@@ -83,7 +85,7 @@ author: "Jose Melo"
 
 ---
 
-## Presentations & Interviews
+### Presentations & Interviews
 
 - **Guest Speaker**, Universidad Católica de Chile (2022)  
   Delivered talks on digital transformation in treasuries, reaching over 80 participants from academia and industry.
@@ -92,14 +94,14 @@ author: "Jose Melo"
 
 ---
 
-## Publications & Research
+### Publications & Research
 
 - **Machine learning techniques for derivative pricing (Master’s Thesis, in progress)**  
   Applying deep learning models to improve derivative pricing accuracy and reduce computational time.
 
 ---
 
-## Technical Skills
+### Technical Skills
 
 - **Programming:** Python, C++, Rust  
 - **Quantitative Methods:** Stochastic Calculus, PDEs, Monte Carlo Simulation, Numerical Analysis  
@@ -108,7 +110,7 @@ author: "Jose Melo"
 
 ---
 
-## Languages
+### Languages
 
 - **Spanish:** Native  
 - **English:** Fluent

@@ -2,7 +2,7 @@
 # Learn more at https://jupyterbook.org/customize/config.html
 
 title: QPacifico
-author: José Melo
+author: Jose Melo
 logo: logo.png
 
 # Force re-execution of notebooks on each build.
