@@ -60,7 +60,7 @@ There's no magic here—it simply requires the developer to manually differentia
 
 This is the traditional derivative method commonly used in finance. It essentially involves shocking the inputs of our function and observing how the outputs change. More precisely, we evaluate the derivative using a finite difference approximation:
 
-$f'(x) = frac{f(x+h)-f(x)}{h}$
+$f'(x) = \frac{f(x+h)-f(x)}{h}$
 
 In terms of implementation, we would have something like:
 
