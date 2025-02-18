@@ -19,7 +19,7 @@ author: "Jose Melo"
 ### Summary
 
 - Extensive quantitative experience with 9+ years in the finance sector, specializing in stochastic modeling, numerical methods, and balance sheet management.
-- Proficient in Python, C++, and Rust for financial software development, including multicurrency SDEs, pricing engines, and automatic differentiation.
+- Proficient in Python, C++, and Rust for financial software development, including multi-risk SDEs, pricing engines, and automatic differentiation.
 
 ---
 
