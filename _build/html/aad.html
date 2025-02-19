@@ -60,6 +60,8 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'aad';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -385,7 +387,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="automatic-differentiation">
+  <section class="tex2jax_ignore mathjax_ignore" id="automatic-differentiation">
 <h1>Automatic Differentiation<a class="headerlink" href="#automatic-differentiation" title="Link to this heading">#</a></h1>
 <p>I’ve wanted to write something about this technique for a while (and by doing so, I also deepen my understanding of it) to automatically compute derivatives in code. In the financial world, derivatives manifest in many ways, such as sensitivities to market variables, so being able to compute them accurately and quickly is of great value for risk management.</p>
 <section id="differentiation-techniques">
@@ -416,9 +418,9 @@
 <section id="before-we-begin-a-reference-function">
 <h2>Before We Begin: A Reference Function<a class="headerlink" href="#before-we-begin-a-reference-function" title="Link to this heading">#</a></h2>
 <p>For all the following examples, we will use the following function as a reference:</p>
-<p>$f(x) = 2x^2+2\cos{x}$</p>
+<p><span class="math notranslate nohighlight">\(f(x) = 2x^2+2\cos{x}\)</span></p>
 <p>Where we know that the analytical derivative is:</p>
-<p>$f’(x) = 4x-2\sin{x}$</p>
+<p><span class="math notranslate nohighlight">\(f'(x) = 4x-2\sin{x}\)</span></p>
 <p>A reference implementation in Rust would be:</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">f64</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
@@ -459,14 +461,14 @@
 <section id="numerical-differentiation">
 <h2>Numerical Differentiation<a class="headerlink" href="#numerical-differentiation" title="Link to this heading">#</a></h2>
 <p>This is the traditional derivative method commonly used in finance. It essentially involves shocking the inputs of our function and observing how the outputs change. More precisely, we evaluate the derivative using a finite difference approximation:</p>
-<p>$f’(x) = \frac{f(x+h)-f(x)}{h}$</p>
+<p><span class="math notranslate nohighlight">\(f'(x) = \frac{f(x+h)-f(x)}{h}\)</span></p>
 <p>In terms of implementation, we would have something like:</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">der_f</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">f64</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>In this technique, we leverage the limit as $h \rightarrow 0$. The precision we seek depends on the discretization method we use. Generally, we can state:</p>
+<p>In this technique, we leverage the limit as <span class="math notranslate nohighlight">\(h \rightarrow 0\)</span>. The precision we seek depends on the discretization method we use. Generally, we can state:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Integration</p></th>
@@ -488,21 +490,21 @@
 <p>Automatic differentiation (AD) is a technique widely used in machine learning (ML) libraries that allows us to compute derivatives as the program runs. Depending on the implementation, it can have low integration costs. Let’s explore it in more detail.</p>
 <section id="how-does-ad-work-in-practice">
 <h3>How Does AD Work in Practice?<a class="headerlink" href="#how-does-ad-work-in-practice" title="Link to this heading">#</a></h3>
-<p>Automatic differentiation is based on the <strong>chain rule</strong>, a fundamental calculus concept. If we recall, this rule states that we can reconstruct the derivative of a function as a composition of the derivatives of its sub-functions. More precisely, if we have a function $h(x) = f(g(x)) $, its derivative is:</p>
-<p>$h’(x) = f’(g(x))g’(x)
-$</p>
-<p>For example, the function $f(x) = 2x^2+2\cos{x} $, whose derivative is $f’(x) = 4x+2\sin{x} $, can be rewritten as:</p>
-<p>$h(x) = x^2, \quad h’(x) = 2x
-$</p>
-<p>$u(x) = \cos{x}, \quad u’(x) = -\sin{x}
-$</p>
-<p>$g(x) = g(h(x)) = 2h(x) = 2x^2, \quad g’(x) = g’(h(x))h’(x) = 2 \cdot 2x = 4x
-$</p>
-<p>$z(x) = z(u(x)) = 2\cos{x}, \quad z’(x) = z’(u(x))u’(x) = -2\sin{x}
-$</p>
-<p>$f(x) = g(x) + z(x) = 2x^2+2\cos{x}, \quad f’(x) = g’(x)+z’(x) = 4x-2\sin{x}
-$</p>
-<p>This allows us to create a computation tree, where the lower nodes represent basic functions like $h(x) $ and $u(x) $, for which we have exact derivatives.</p>
+<p>Automatic differentiation is based on the <strong>chain rule</strong>, a fundamental calculus concept. If we recall, this rule states that we can reconstruct the derivative of a function as a composition of the derivatives of its sub-functions. More precisely, if we have a function <span class="math notranslate nohighlight">\(h(x) = f(g(x)) \)</span>, its derivative is:</p>
+<p><span class="math notranslate nohighlight">\(h'(x) = f'(g(x))g'(x)
+\)</span></p>
+<p>For example, the function <span class="math notranslate nohighlight">\(f(x) = 2x^2+2\cos{x} \)</span>, whose derivative is <span class="math notranslate nohighlight">\(f'(x) = 4x+2\sin{x} \)</span>, can be rewritten as:</p>
+<p><span class="math notranslate nohighlight">\(h(x) = x^2, \quad h'(x) = 2x
+\)</span></p>
+<p><span class="math notranslate nohighlight">\(u(x) = \cos{x}, \quad u'(x) = -\sin{x}
+\)</span></p>
+<p><span class="math notranslate nohighlight">\(g(x) = g(h(x)) = 2h(x) = 2x^2, \quad g'(x) = g'(h(x))h'(x) = 2 \cdot 2x = 4x
+\)</span></p>
+<p><span class="math notranslate nohighlight">\(z(x) = z(u(x)) = 2\cos{x}, \quad z'(x) = z'(u(x))u'(x) = -2\sin{x}
+\)</span></p>
+<p><span class="math notranslate nohighlight">\(f(x) = g(x) + z(x) = 2x^2+2\cos{x}, \quad f'(x) = g'(x)+z'(x) = 4x-2\sin{x}
+\)</span></p>
+<p>This allows us to create a computation tree, where the lower nodes represent basic functions like <span class="math notranslate nohighlight">\(h(x) \)</span> and <span class="math notranslate nohighlight">\(u(x) \)</span>, for which we have exact derivatives.</p>
 </section>
 <section id="conclusions">
 <h3>Conclusions<a class="headerlink" href="#conclusions" title="Link to this heading">#</a></h3>
