@@ -82,12 +82,12 @@ Automatic differentiation (AD) is a technique widely used in machine learning (M
 
 ### How Does AD Work in Practice?
 
-Automatic differentiation is based on the **chain rule**, a fundamental calculus concept. If we recall, this rule states that we can reconstruct the derivative of a function as a composition of the derivatives of its sub-functions. More precisely, if we have a function $h(x) = f(g(x)) $, its derivative is:
+Automatic differentiation is based on the **chain rule**, a fundamental calculus concept. If we recall, this rule states that we can reconstruct the derivative of a function as a composition of the derivatives of its sub-functions. More precisely, if we have a function $h(x) = f(g(x))$, its derivative is:
 
 $h'(x) = f'(g(x))g'(x)
 $
 
-For example, the function $f(x) = 2x^2+2\cos{x} $, whose derivative is $f'(x) = 4x+2\sin{x} $, can be rewritten as:
+For example, the function $f(x) = 2x^2+2\cos{x}$, whose derivative is $f'(x) = 4x+2\sin{x}$, can be rewritten as:
 
 $h(x) = x^2, \quad h'(x) = 2x
 $
@@ -104,7 +104,7 @@ $
 $f(x) = g(x) + z(x) = 2x^2+2\cos{x}, \quad f'(x) = g'(x)+z'(x) = 4x-2\sin{x}
 $
 
-This allows us to create a computation tree, where the lower nodes represent basic functions like $h(x) $ and $u(x) $, for which we have exact derivatives.
+This allows us to create a computation tree, where the lower nodes represent basic functions like $h(x)$ and $u(x)$, for which we have exact derivatives.
 
 ### Conclusions
 
