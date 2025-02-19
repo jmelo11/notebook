@@ -235,7 +235,7 @@ setup(
 
 With all files in hand, we begin compiling. In this case, we assume that the files come from the repository mentioned at the beginning. The commands assume the following folder structure:
 
-```{image} ../images/folders.png
+```{image} ./images/folders.png
 :alt: Folder Structure
 :class: bg-primary mb-1
 :width: 200px
@@ -300,7 +300,7 @@ for date, cashflow in bond.cashflows().items():
 
 ```
 
-```{image} ../images/output.png
+```{image} ./images/output.png
 :alt: Output
 :class: bg-primary mb-1
 :width: 200px

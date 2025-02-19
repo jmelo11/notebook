@@ -572,7 +572,7 @@
 </section>
 </section>
 <section id="the-setup-py-file">
-<h2>The <a class="reference external" href="http://setup.py">setup.py</a> file<a class="headerlink" href="#the-setup-py-file" title="Link to this heading">#</a></h2>
+<h2>The setup.py file<a class="headerlink" href="#the-setup-py-file" title="Link to this heading">#</a></h2>
 <p>This file essentially contains the instructions to compile module.cpp correctly. It is necessary to provide the header file paths and the compiled library path, just as you would in any C++ project. As mentioned at the beginning, for everything to work properly, you must also have the pybind11 library installed in Python (which you can do via pip).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pybind11.setup_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pybind11Extension</span><span class="p">,</span> <span class="n">build_ext</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">setuptools</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup</span>
@@ -606,7 +606,7 @@
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
 <p>With all files in hand, we begin compiling. In this case, we assume that the files come from the repository mentioned at the beginning. The commands assume the following folder structure:</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="../images/folders.png"><img alt="Folder Structure" class="bg-primary mb-1 align-center" src="../images/folders.png" style="width: 200px;" /></a>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/folders.png"><img alt="Folder Structure" class="bg-primary mb-1 align-center" src="_images/folders.png" style="width: 200px;" /></a>
 <p>The steps to install everything are as follows:</p>
 <ol class="arabic">
 <li><p>CMake:
@@ -661,7 +661,7 @@ pip<span class="w"> </span>setup.py<span class="w"> </span>install
 
 </pre></div>
 </div>
-<a class="bg-primary mb-1 reference internal image-reference" href="../images/output.png"><img alt="Output" class="bg-primary mb-1 align-center" src="../images/output.png" style="width: 200px;" /></a>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/output.png"><img alt="Output" class="bg-primary mb-1 align-center" src="_images/output.png" style="width: 200px;" /></a>
 <p>And that’s it! Our module is now available in a high-level language.</p>
 <p>We have reached the end of the tutorial. As mentioned at the beginning, pybind11 is one of several tools designed to achieve interoperability between languages. For those interested in migrating between languages, I recommend exploring SWIG, which functions similarly and allows integration with languages such as C# or JavaScript, which can be useful for other applications. Additionally, you are invited to review the pybind11 documentation, as it offers other interesting features that we did not cover here, such as the ability to use Python types and libraries in C++ (the reverse of what we did here).</p>
 </section>
