@@ -33,7 +33,11 @@ html:
 
 parse:
   myst_enable_extensions:
+    - amsmath
+    - deflist
     - dollarmath
+    - tasklist
+    - colon_fence
 
 sphinx:
   config:
