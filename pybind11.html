@@ -572,7 +572,7 @@
 </section>
 </section>
 <section id="the-setup-py-file">
-<h2>The <a class="reference external" href="http://setup.py">setup.py</a> file<a class="headerlink" href="#the-setup-py-file" title="Link to this heading">#</a></h2>
+<h2>The setup.py file<a class="headerlink" href="#the-setup-py-file" title="Link to this heading">#</a></h2>
 <p>This file essentially contains the instructions to compile module.cpp correctly. It is necessary to provide the header file paths and the compiled library path, just as you would in any C++ project. As mentioned at the beginning, for everything to work properly, you must also have the pybind11 library installed in Python (which you can do via pip).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pybind11.setup_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pybind11Extension</span><span class="p">,</span> <span class="n">build_ext</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">setuptools</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup</span>
