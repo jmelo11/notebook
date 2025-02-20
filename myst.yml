@@ -1,0 +1,22 @@
+version: 1
+project:
+  title: Jose Melo
+  authors:
+    - name: Jose Melo
+  github: jmelo11/notebook
+  bibliography:
+    - references.bib
+  exports:
+    - format: pdf
+      template: plain_latex_book
+      output: exports/book.pdf
+  toc:
+    - file: intro.md
+    - file: cv.md
+    - file: options_pinns.ipynb
+    - file: aad.md
+    - file: pybind11.md
+site:
+  options:
+    logo: logo.png
+  template: book-theme

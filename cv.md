@@ -2,15 +2,20 @@
 jupyter:
   jupytext:
     formats: ipynb,md
-title: "CV - Jose Melo"
+title: "About me"
 author: "Jose Melo"
 ---
 
 # About me
 
-## Jose Melo
+```{image} ./images/me.jpeg
+:alt: Me
+:class: bg-primary
+:width: 300px
+:align: center
+```
 
-**Location:** Madrid, Spain  
+Madrid, Spain  
 **Phone:** +34 614 377 868
 **Email:** [jose.pedro.melo@gmail.com](mailto:jose.pedro.melo@gmail.com)
 
@@ -44,7 +49,7 @@ author: "Jose Melo"
 
 ### Career
 
-#### Itaú Corpbanca, Santiago, Chile
+#### Itaú, Santiago, Chile
 
 ##### Sr. Product Owner FO  
 
