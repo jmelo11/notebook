@@ -11,7 +11,7 @@ project:
       template: plain_latex_book
       output: exports/book.pdf
   toc:
-    - file: intro.md
+    - file: index.md
     - file: cv.md
     - file: options_pinns.ipynb
     - file: aad.md
