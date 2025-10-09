@@ -87,7 +87,7 @@ Automatic differentiation is based on the **chain rule**, a fundamental calculus
 $h'(x) = f'(g(x))g'(x)
 $
 
-For example, the function $f(x) = 2x^2+2\cos{x}$, whose derivative is $f'(x) = 4x+2\sin{x}$, can be rewritten as:
+For example, the function $f(x) = 2x^2+2\cos{x}$, whose derivative is $f'(x) = 4x-2\sin{x}$, can be rewritten as:
 
 $h(x) = x^2, \quad h'(x) = 2x
 $
