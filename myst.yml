@@ -6,16 +6,18 @@ project:
   github: jmelo11/notebook
   bibliography:
     - references.bib
+  jupyter: lite
   exports:
     - format: pdf
-      template: plain_latex_book
-      output: exports/book.pdf
+      template: plain_latex
+      articles: options_pinns.ipynb
   toc:
     - file: index.md
     - file: cv.md
     - file: options_pinns.ipynb
     - file: aad.md
     - file: pybind11.md
+    - file: policyrates.ipynb
 site:
   options:
     logo: logo.png

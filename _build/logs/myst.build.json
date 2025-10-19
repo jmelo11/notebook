@@ -1,11 +1,9 @@
 {
   "input": {
-    "files": [
-      "."
-    ],
+    "files": [],
     "opts": {
       "execute": false,
-      "pdf": false,
+      "pdf": true,
       "tex": false,
       "typst": false,
       "docx": false,
@@ -25,5 +23,19 @@
       "maxSizeWebp": 1572864
     }
   },
-  "exports": []
+  "exports": [
+    {
+      "format": "pdf",
+      "template": "plain_latex",
+      "articles": [
+        {
+          "file": "/Users/josemelo/Desktop/dev/libs/notebook/options_pinns.ipynb",
+          "level": 0
+        }
+      ],
+      "output": "/Users/josemelo/Desktop/dev/libs/notebook/_build/exports/options-pinns.pdf",
+      "$file": "/Users/josemelo/Desktop/dev/libs/notebook/myst.yml",
+      "$project": "/Users/josemelo/Desktop/dev/libs/notebook"
+    }
+  ]
 }
