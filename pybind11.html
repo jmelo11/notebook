@@ -1,795 +1,162 @@
-
-<!DOCTYPE html>
-
-
-<html lang="en" data-content_root="./" >
-
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <title>Pybind11 Tutorial &#8212; QPacifico</title>
-  
-  
-  
-  <script data-cfasync="false">
-    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
-  </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
-  
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
-    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
-    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-  
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
-
-    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>let toggleHintShow = 'Click to show';</script>
-    <script>let toggleHintHide = 'Click to hide';</script>
-    <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'pybind11';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Automatic Differentiation" href="aad.html" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
-  </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
-  
-  
-  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
-  
-  <div id="pst-scroll-pixel-helper"></div>
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
-  
-  <dialog id="pst-search-dialog">
-    
-<form class="bd-search d-flex align-items-center"
-      action="search.html"
-      method="get">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="search"
-         class="form-control"
-         name="q"
-         placeholder="Search this book..."
-         aria-label="Search this book..."
-         autocomplete="off"
-         autocorrect="off"
-         autocapitalize="off"
-         spellcheck="false"/>
-  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
-
-  <div class="pst-async-banner-revealer d-none">
-  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
-</div>
-
-  
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
-    </header>
-  
-
-  <div class="bd-container">
-    <div class="bd-container__inner bd-page-width">
-      
-      
-      
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
-        
-
-  
-  <div class="sidebar-header-items sidebar-primary__section">
-    
-    
-    
-    
-  </div>
-  
-    <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item">
-
-  
-    
-  
-
-<a class="navbar-brand logo" href="intro.html">
-  
-  
-  
-  
-  
-    
-    
-      
-    
-    
-    <img src="_static/logo.png" class="logo__image only-light" alt="QPacifico - Home"/>
-    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="QPacifico - Home"/>
-  
-  
-</a></div>
-        <div class="sidebar-primary-item">
-
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
-        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item navbar-nav active">
-        
-        <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1">
-                <a class="reference internal" href="intro.html">
-                    Welcome to my notebook
-                </a>
-            </li>
-        </ul>
-        <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="cv.html">About me</a></li>
-<li class="toctree-l1"><a class="reference internal" href="options_pinns.html">Derivative Pricing using Neural Networks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="aad.html">Automatic Differentiation</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Pybind11 Tutorial</a></li>
-</ul>
-
-    </div>
-</nav></div>
-    </div>
-  
-  
-  <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
-  </div>
-
-
-      </div>
-      
-      <main id="main-content" class="bd-main" role="main">
-        
-        
-
-<div class="sbt-scroll-pixel-helper"></div>
-
-          <div class="bd-content">
-            <div class="bd-article-container">
-              
-              <div class="bd-header-article d-print-none">
-<div class="header-article-items header-article__inner">
-  
-    <div class="header-article-items__start">
-      
-        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <span class="fa-solid fa-bars"></span>
-</button></div>
-      
-    </div>
-  
-  
-    <div class="header-article-items__end">
-      
-        <div class="header-article-item">
-
-<div class="article-header-buttons">
-
-
-
-
-
-<div class="dropdown dropdown-source-buttons">
-  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
-    <i class="fab fa-github"></i>
-  </button>
-  <ul class="dropdown-menu">
-      
-      
-      
-      <li><a href="https://github.com/jmelo11/notebook" target="_blank"
-   class="btn btn-sm btn-source-repository-button dropdown-item"
-   title="Source repository"
-   data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="btn__text-container">Repository</span>
-</a>
-</li>
-      
-      
-      
-      
-      <li><a href="https://github.com/jmelo11/notebook/issues/new?title=Issue%20on%20page%20%2Fpybind11.html&body=Your%20issue%20content%20here." target="_blank"
-   class="btn btn-sm btn-source-issues-button dropdown-item"
-   title="Open an issue"
-   data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="btn__text-container">Open issue</span>
-</a>
-</li>
-      
-  </ul>
-</div>
-
-
-
-
-
-
-<div class="dropdown dropdown-download-buttons">
-  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
-    <i class="fas fa-download"></i>
-  </button>
-  <ul class="dropdown-menu">
-      
-      
-      
-      <li><a href="_sources/pybind11.md" target="_blank"
-   class="btn btn-sm btn-download-source-button dropdown-item"
-   title="Download source file"
-   data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="btn__text-container">.md</span>
-</a>
-</li>
-      
-      
-      
-      
-      <li>
-<button onclick="window.print()"
-  class="btn btn-sm btn-download-pdf-button dropdown-item"
-  title="Print to PDF"
-  data-bs-placement="left" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="btn__text-container">.pdf</span>
-</button>
-</li>
-      
-  </ul>
-</div>
-
-
-
-
-<button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button"
-  title="Fullscreen mode"
-  data-bs-placement="bottom" data-bs-toggle="tooltip"
->
-  
-
-<span class="btn__icon-container">
-  <i class="fas fa-expand"></i>
-  </span>
-
-</button>
-
-
-
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
-
-
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
-</div></div>
-      
-    </div>
-  
-</div>
-</div>
-              
-              
-
-<div id="jb-print-docs-body" class="onlyprint">
-    <h1>Pybind11 Tutorial</h1>
-    <!-- Table of contents -->
-    <div id="print-main-content">
-        <div id="jb-print-toc">
-            
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-objective">Tutorial Objective</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">Setup</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-library">C++ Library</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-cpp-file">module.cpp file</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#py-enum">py::enum_</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#py-class">py::class_</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inheritance">Inheritance</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#def">.def</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-setup-py-file">The setup.py file</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-example">Usage Example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results-and-conclusions">Results and Conclusions</a></li>
-</ul>
-            </nav>
-        </div>
-    </div>
-</div>
-
-              
-                
-<div id="searchbox"></div>
-                <article class="bd-article">
-                  
-  <section id="pybind11-tutorial">
-<h1>Pybind11 Tutorial<a class="headerlink" href="#pybind11-tutorial" title="Link to this heading">#</a></h1>
-<p>For some time now, our team has been developing financial applications, and we frequently encounter the need to integrate them with other tools written in different languages. While REST APIs are very useful for integration, C++ (the language we use for these tools) doesn’t offer many great integration tools. A good alternative is to translate C++ into another language and work from there. In this context, <strong>pybind11</strong> is a great option because it allows us to seamlessly migrate C++ code to Python. Below is a simple tutorial on how to use <strong>pybind11</strong> to expose C++ code in Python.</p>
-<section id="tutorial-objective">
-<h2>Tutorial Objective<a class="headerlink" href="#tutorial-objective" title="Link to this heading">#</a></h2>
-<p>The assumption here is that if we’re attempting a language migration, it’s because we want to use tools available in another language that can help our development. In this case, the core logic of our application is already implemented, and we just need a framework to easily move between languages. The beauty of <strong>pybind11</strong> is that it provides a simple framework for this purpose. There are other tools that can do the same (such as SWIG), each with its own pros and cons, but they will not be covered in this tutorial.</p>
-</section>
-<section id="setup">
-<h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h2>
-<p>The first thing you need is a C++ project. I created a repository where you can find the files for this tutorial:</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="github reference external" href="https://github.com/jmelo11/pybindtutorial">jmelo11/pybindtutorial</a></p>
-</div>
-<p>To run this tutorial, you need to have:</p>
-<ul class="simple">
-<li><p>A C++ compiler supporting C++11 or later.</p></li>
-<li><p>The Python package <strong>pybind11</strong> installed (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pybind11</span></code>).</p></li>
-<li><p>CMake, which simplifies cross-platform compilation.</p></li>
-</ul>
-</section>
-<section id="c-library">
-<h2>C++ Library<a class="headerlink" href="#c-library" title="Link to this heading">#</a></h2>
-<p>Here’s a basic C++ library that we want to migrate to Python:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef D3C623E9_FC36_4EEF_9ED6_46B293F1B764</span>
-<span class="cp">#define D3C623E9_FC36_4EEF_9ED6_46B293F1B764</span>
-
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;map&gt;</span>
-
-<span class="k">namespace</span><span class="w"> </span><span class="nn">FinLib</span><span class="w"> </span><span class="p">{</span>
-
-<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">Date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="p">;</span>
-<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">Cashflows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">Date</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span>
-<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="nc">Frequency</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Monthly</span><span class="p">,</span><span class="w"> </span><span class="n">Quarterly</span><span class="p">,</span><span class="w"> </span><span class="n">Semiannual</span><span class="p">,</span><span class="w"> </span><span class="n">Annual</span><span class="p">,</span><span class="w"> </span><span class="n">Once</span><span class="w"> </span><span class="p">};</span>
-
-<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">Bond</span><span class="w"> </span><span class="p">{</span>
-<span class="w">       </span><span class="k">public</span><span class="o">:</span>
-<span class="w">        </span><span class="n">Bond</span><span class="p">(</span><span class="n">Date</span><span class="w"> </span><span class="n">startDate</span><span class="p">,</span><span class="w"> </span><span class="n">Date</span><span class="w"> </span><span class="n">endDate</span><span class="p">,</span><span class="w"> </span><span class="n">Frequency</span><span class="w"> </span><span class="n">paymentFrequency</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">notional</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">couponRate</span><span class="p">);</span>
-<span class="w">        </span><span class="n">Cashflows</span><span class="w"> </span><span class="nf">cashflows</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
-
-<span class="w">       </span><span class="k">private</span><span class="o">:</span>
-<span class="w">        </span><span class="n">Date</span><span class="w"> </span><span class="n">startDate_</span><span class="p">,</span><span class="w"> </span><span class="n">endDate_</span><span class="p">;</span>
-<span class="w">        </span><span class="n">Frequency</span><span class="w"> </span><span class="n">paymentFrequency_</span><span class="p">;</span>
-<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">notional_</span><span class="p">,</span><span class="w"> </span><span class="n">couponRate_</span><span class="p">;</span>
-<span class="w">        </span><span class="n">Cashflows</span><span class="w"> </span><span class="n">cashflows_</span><span class="p">;</span>
-<span class="w">    </span><span class="p">};</span>
-
-<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">Deposit</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Bond</span><span class="w"> </span><span class="p">{</span>
-<span class="w">       </span><span class="k">public</span><span class="o">:</span>
-<span class="w">        </span><span class="n">Deposit</span><span class="p">(</span><span class="n">Date</span><span class="w"> </span><span class="n">startDate</span><span class="p">,</span><span class="w"> </span><span class="n">Date</span><span class="w"> </span><span class="n">endDate</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">notional</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">rate</span><span class="p">);</span>
-<span class="w">    </span><span class="p">};</span>
-
-<span class="w">    </span><span class="kr">inline</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="nf">pv</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Cashflows</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cashflows</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">discountRate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">pv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cf</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">cashflows</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
-<span class="w">            </span><span class="n">pv</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">second</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">discountRate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cf</span><span class="p">.</span><span class="n">first</span><span class="p">);</span><span class="w"> </span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">pv</span><span class="p">;</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="kr">inline</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="nf">pv</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Bond</span><span class="o">&amp;</span><span class="w"> </span><span class="n">bond</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">discountRate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">pv</span><span class="p">(</span><span class="n">bond</span><span class="p">.</span><span class="n">cashflows</span><span class="p">(),</span><span class="w"> </span><span class="n">discountRate</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="p">};</span><span class="w">  </span><span class="c1">// namespace FinLib</span>
-
-<span class="cp">#endif </span>
-</pre></div>
-</div>
-<p>The relevant part of this script is not what it does or it’s methods, but what we want to expose in Python. In this case we have:</p>
-<ul class="simple">
-<li><p>A class <code class="docutils literal notranslate"><span class="pre">Bond</span></code> with a method <code class="docutils literal notranslate"><span class="pre">cashflows</span></code>.</p></li>
-<li><p>A function <code class="docutils literal notranslate"><span class="pre">pv</span></code> that calculates the present value of cashflows.</p></li>
-<li><p>In this example, we can see that the enum <code class="docutils literal notranslate"><span class="pre">Frequency</span></code> is at the root of the namespace <code class="docutils literal notranslate"><span class="pre">FinLib</span></code>.</p></li>
-</ul>
-<p>The implementation is in the file <code class="docutils literal notranslate"><span class="pre">mylibrary.hpp</span></code>, which is not relevant for this tutorial but readers can find it in the repository.</p>
-</section>
-<section id="module-cpp-file">
-<h2>module.cpp file<a class="headerlink" href="#module-cpp-file" title="Link to this heading">#</a></h2>
-<p>Once our C++ library is written and working, we need to provide instructions to <strong>pybind11</strong> so that it can interpret our classes and present them in Python as desired. We do this by writing a small source file (the filename is not important).</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;../library/mylibrary.hpp&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pybind11/pybind11.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;pybind11/stl.h&gt;</span>
-
-<span class="k">namespace</span><span class="w"> </span><span class="nn">py</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">pybind11</span><span class="p">;</span>
-
-<span class="n">PYBIND11_MODULE</span><span class="p">(</span><span class="n">FinLib</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">m</span><span class="p">.</span><span class="n">doc</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Financial Library&quot;</span><span class="p">;</span>
-
-<span class="w">    </span><span class="n">py</span><span class="o">::</span><span class="n">enum_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Frequency&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Monthly&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Monthly</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Quarterly&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Quarterly</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Semiannual&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Semiannual</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Annual&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Annual</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Once&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Once</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">export_values</span><span class="p">();</span>
-
-<span class="w">    </span><span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Cashflows</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Cashflows&quot;</span><span class="p">).</span><span class="n">def</span><span class="p">(</span><span class="n">py</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">());</span>
-<span class="w">    </span><span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Bond&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="n">py</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">())</span>
-<span class="w">        </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;cashflows&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">::</span><span class="n">cashflows</span><span class="p">);</span>
-
-<span class="w">    </span><span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Deposit</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Deposit&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="n">py</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">());</span>
-
-<span class="w">    </span><span class="n">m</span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;cashflowPV&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">py</span><span class="o">::</span><span class="n">overload_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Cashflows</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">pv</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;Calculates PV of cashflows&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">m</span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;bondPV&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">py</span><span class="o">::</span><span class="n">overload_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">pv</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;Calculates PV of a bond&quot;</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>First, let’s highlight the include headers:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">include</span> <span class="pre">&lt;pybind11/pybind11.h&gt;</span></code>: In this tutorial, we install our module with setuptools, so it is not necessary to download the pybind11 repository manually. In fact, installing the Python package automatically provides the header files</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">include</span> <span class="pre">&lt;pybind11/stl.h&gt;</span></code>: To automatically convert standard library types (in our case, the map behind Cashflows), this header must be included</p></li>
-</ul>
-<p>The pybind11 syntax is fairly self-explanatory, but here’s a brief walkthrough. First, note that the module is contained within the <code class="docutils literal notranslate"><span class="pre">PYBIND11_MODULE</span></code> macro. Its arguments are the name we want to give our library – FinLib in this example – and a parameter of type <code class="docutils literal notranslate"><span class="pre">py::module_</span></code>, which serves as the entry point for our module.</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>The name of our module must be provided without quotes and must be identical to the one defined in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>, which we will cover next.</p>
-</div>
-<section id="py-enum">
-<h3>py::enum_<a class="headerlink" href="#py-enum" title="Link to this heading">#</a></h3>
-<p>This template is used to export enumerations to Python. As template parameters, we use the same enum defined in our library. Here are some useful notes:</p>
-<ul class="simple">
-<li><p>The names we use in our definitions – not only for enums but for all pybind11 methods – do not necessarily need to match the real function names. For example, one could define:</p></li>
-</ul>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">py</span><span class="o">::</span><span class="n">enum_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Frecuencia&quot;</span><span class="p">)</span>
-<span class="w">      </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Monthly&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Monthly</span><span class="p">)</span>
-<span class="w">      </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Quarterly&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Quarterly</span><span class="p">)</span>
-<span class="w">      </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Semiannual&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Semiannual</span><span class="p">)</span>
-<span class="w">      </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Annual&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Annual</span><span class="p">)</span>
-<span class="w">      </span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;Once&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="o">::</span><span class="n">Once</span><span class="p">)</span>
-<span class="w">      </span><span class="p">.</span><span class="n">export_values</span><span class="p">();</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>When using plain enums (and not enum class), it is necessary to invoke export_values() at the end of the definition because Python requires these enums not to be implicitly convertible to other types.</p></li>
-</ul>
-</section>
-<section id="py-class">
-<h3>py::class_<a class="headerlink" href="#py-class" title="Link to this heading">#</a></h3>
-<p>It is useful to discuss py::init, inheritance, and the .def method for classes, as these are central to exporting classes. py::init is the constructor for our classes. It is a template that takes the parameters of our C++ class and converts them into Python types. For successful compilation, the types must be previously defined as a class, enum, or type. You can also pass a lambda function to generate a specialized constructor. For example:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Specialized constructor example (hiding the previous definition as duplicate definitions are not allowed)</span>
-<span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Bond&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="n">py</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">([](</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="w"> </span><span class="n">endDate</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Frequency</span><span class="w"> </span><span class="n">freq</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">notional</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">rate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="p">(</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="n">endDate</span><span class="p">,</span><span class="w"> </span><span class="n">freq</span><span class="p">,</span><span class="w"> </span><span class="n">notional</span><span class="p">,</span><span class="w"> </span><span class="n">rate</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;cashflows&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">::</span><span class="n">cashflows</span><span class="p">);</span>
-</pre></div>
-</div>
-</section>
-<section id="inheritance">
-<h3>Inheritance<a class="headerlink" href="#inheritance" title="Link to this heading">#</a></h3>
-<p>It is also possible to define which objects inherit from others by specifying them in the template parameters of each class.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Base class</span>
-<span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Bond&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="p">...</span><span class="o">&gt;</span>
-<span class="w">       </span>
-<span class="c1">// Derived class</span>
-<span class="n">py</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Deposit</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Deposit&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="n">py</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="p">,</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Date</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">());</span>
-</pre></div>
-</div>
-<p>This is practical as it saves us from writing all the base class methods in the derived class.</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>If we do not define the inheritance, our code will compile, but Python will not be able to associate the derived classes with the base.</p>
-</div>
-</section>
-<section id="def">
-<h3>.def<a class="headerlink" href="#def" title="Link to this heading">#</a></h3>
-<p>Finally, the .def method allows us to define functions, whether they belong to a class or are standalone (inline or static functions). A particularly interesting case is when we have overloaded functions:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">m</span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;cashflowPV&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">py</span><span class="o">::</span><span class="n">overload_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Cashflows</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">pv</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;Calculates the present value of a set of cashflows&quot;</span><span class="p">);</span>
-<span class="n">m</span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;bondPV&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">py</span><span class="o">::</span><span class="n">overload_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">FinLib</span><span class="o">::</span><span class="n">Bond</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">FinLib</span><span class="o">::</span><span class="n">pv</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;Calculates the present value of a bond&quot;</span><span class="p">);</span>
-</pre></div>
-</div>
-<p>In this case, we must provide pybind11 with the tools to determine which method to call. We do this using py::overload_cast, a function that matches based on the types of the function arguments.</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>Python does not support method overloading since it lacks type information to determine which function to use. Therefore, we must define the functions with different names.</p>
-</div>
-</section>
-</section>
-<section id="the-setup-py-file">
-<h2>The setup.py file<a class="headerlink" href="#the-setup-py-file" title="Link to this heading">#</a></h2>
-<p>This file essentially contains the instructions to compile module.cpp correctly. It is necessary to provide the header file paths and the compiled library path, just as you would in any C++ project. As mentioned at the beginning, for everything to work properly, you must also have the pybind11 library installed in Python (which you can do via pip).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pybind11.setup_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pybind11Extension</span><span class="p">,</span> <span class="n">build_ext</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">setuptools</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-
-<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;1.0.0&quot;</span>
-<span class="n">libraryName</span> <span class="o">=</span> <span class="s2">&quot;FinLib&quot;</span>
-<span class="n">LIBDIR</span> <span class="o">=</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;library&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-
-<span class="n">ext_modules</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">Pybind11Extension</span><span class="p">(</span><span class="n">libraryName</span><span class="p">,</span>
-                      <span class="p">[</span><span class="s2">&quot;module.cpp&quot;</span><span class="p">],</span>
-                      <span class="n">include_dirs</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">LIBDIR</span><span class="p">)],</span>
-                      <span class="n">library_dirs</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">LIBDIR</span> <span class="o">/</span> <span class="s2">&quot;build&quot;</span><span class="p">)],</span>
-                      <span class="n">libraries</span><span class="o">=</span><span class="p">[</span><span class="n">libraryName</span><span class="p">],</span>
-                      <span class="n">define_macros</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;VERSION_INFO&#39;</span><span class="p">,</span> <span class="n">__version__</span><span class="p">)],</span>
-                      <span class="n">language</span><span class="o">=</span><span class="s2">&quot;c++20&quot;</span>
-                      <span class="p">),</span>
-<span class="p">]</span>
-
-<span class="n">setup</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="n">libraryName</span><span class="p">,</span>
-    <span class="n">version</span><span class="o">=</span><span class="n">__version__</span><span class="p">,</span>
-    <span class="n">ext_modules</span><span class="o">=</span><span class="n">ext_modules</span><span class="p">,</span>
-    <span class="n">cmdclass</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;build_ext&quot;</span><span class="p">:</span> <span class="n">build_ext</span><span class="p">},</span>
-    <span class="n">python_requires</span><span class="o">=</span><span class="s2">&quot;&gt;=3.7&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
-<p>With all files in hand, we begin compiling. In this case, we assume that the files come from the repository mentioned at the beginning. The commands assume the following folder structure:</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="_images/folders.png"><img alt="Folder Structure" class="bg-primary mb-1 align-center" src="_images/folders.png" style="width: 200px;" /></a>
-<p>The steps to install everything are as follows:</p>
-<ol class="arabic">
-<li><p>CMake:
-Create a build directory inside the library folder and navigate to that directory in the terminal. Then execute:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>..
-cmake<span class="w"> </span>--build<span class="w"> </span>.<span class="w"> </span>--config<span class="w"> </span>Release
-</pre></div>
-</div>
-<p>This will run CMake and compile our initial library (FinLib). If everything goes well, you should see a file libFinLib.a on Mac/Linux or FinLib.lib on Windows.</p>
-</li>
-<li><p>Once the library is compiled, navigate to the module directory and execute from the console:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>setup.py<span class="w"> </span>build<span class="w"> </span>--force
-pip<span class="w"> </span>setup.py<span class="w"> </span>install
-</pre></div>
-</div>
-<p>Alternatively, you can use <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.</span></code>, but during development it is common to compile several times to ensure that the module is fully recompiled and that changes are reflected correctly.</p>
-</li>
-</ol>
-</section>
-<section id="usage-example">
-<h2>Usage Example<a class="headerlink" href="#usage-example" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">FinLib</span>
-
-<span class="n">startDate</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">endDate</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">rate</span> <span class="o">=</span> <span class="mf">0.03</span>
-<span class="n">notional</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">frequency</span> <span class="o">=</span> <span class="n">FinLib</span><span class="o">.</span><span class="n">Semiannual</span>
-
-<span class="n">bond</span> <span class="o">=</span> <span class="n">FinLib</span><span class="o">.</span><span class="n">Bond</span><span class="p">(</span><span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">notional</span><span class="p">,</span> <span class="n">rate</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">date</span><span class="p">,</span> <span class="n">cashflow</span> <span class="ow">in</span> <span class="n">bond</span><span class="o">.</span><span class="n">cashflows</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Date: </span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2">, Cashflow: </span><span class="si">{</span><span class="n">cashflow</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="results-and-conclusions">
-<h2>Results and Conclusions<a class="headerlink" href="#results-and-conclusions" title="Link to this heading">#</a></h2>
-<p>After installing the module in Python, you should be able to run Python scripts that use the library. Below is an example with some brief commentary:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Copiar</span>
-<span class="n">startDate</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">endDate</span> <span class="o">=</span> <span class="mi">5</span>
-
-<span class="n">rate</span> <span class="o">=</span> <span class="mf">0.03</span>
-<span class="n">notional</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">frequency</span> <span class="o">=</span> <span class="n">FinLib</span><span class="o">.</span><span class="n">Semiannual</span>
-
-<span class="n">bond</span> <span class="o">=</span> <span class="n">FinLib</span><span class="o">.</span><span class="n">Bond</span><span class="p">(</span><span class="n">startDate</span><span class="p">,</span> <span class="n">endDate</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">notional</span><span class="p">,</span> <span class="n">rate</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">date</span><span class="p">,</span> <span class="n">cashflow</span> <span class="ow">in</span> <span class="n">bond</span><span class="o">.</span><span class="n">cashflows</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>     
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Date:</span><span class="se">\t</span><span class="si">{d}</span><span class="s1">,  Cashflow:</span><span class="se">\t</span><span class="si">{c}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">cashflow</span><span class="p">))</span>
-
-</pre></div>
-</div>
-<a class="bg-primary mb-1 reference internal image-reference" href="_images/output.png"><img alt="Output" class="bg-primary mb-1 align-center" src="_images/output.png" style="width: 200px;" /></a>
-<p>And that’s it! Our module is now available in a high-level language.</p>
-<p>We have reached the end of the tutorial. As mentioned at the beginning, pybind11 is one of several tools designed to achieve interoperability between languages. For those interested in migrating between languages, I recommend exploring SWIG, which functions similarly and allows integration with languages such as C# or JavaScript, which can be useful for other applications. Additionally, you are invited to review the pybind11 documentation, as it offers other interesting features that we did not cover here, such as the ability to use Python types and libraries in C++ (the reverse of what we did here).</p>
-</section>
-</section>
-
-    <script type="text/x-thebe-config">
-    {
-        requestKernel: true,
-        binderOptions: {
-            repo: "binder-examples/jupyter-stacks-datascience",
-            ref: "master",
-        },
-        codeMirrorConfig: {
-            theme: "abcdef",
-            mode: "python"
-        },
-        kernelOptions: {
-            name: "python3",
-            path: "./."
-        },
-        predefinedOutput: true
+<!DOCTYPE html><html lang="en" class="" style="scroll-padding:60px"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Pybind11 Tutorial - Jose Melo</title><meta property="og:title" content="Pybind11 Tutorial - Jose Melo"/><meta name="generator" content="mystmd"/><meta name="keywords" content=""/><meta name="image" content="/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.webp"/><meta property="og:image" content="/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.webp"/><link rel="icon" href="/favicon.ico"/><link rel="stylesheet" href="/build/_assets/app-4HOVZEUI.css"/><link rel="stylesheet" href="/build/_assets/thebe-core-VKVHG5VY.css"/><link rel="stylesheet" href="/myst-theme.css"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jupyter-matplotlib@0.11.3/css/mpl_widget.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" integrity="sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ" crossorigin="anonymous"/><script>
+  const savedTheme = localStorage.getItem("myst:theme");
+  const theme = window.matchMedia("(prefers-color-scheme: light)").matches ? 'light' : 'dark';
+  const classes = document.documentElement.classList;
+  const hasAnyTheme = classes.contains('light') || classes.contains('dark');
+  if (!hasAnyTheme) classes.add(savedTheme ?? theme);
+</script></head><body class="m-0 transition-colors duration-500 bg-white dark:bg-stone-900"><div class="fixed top-1 left-1 h-[0px] w-[0px] focus-within:z-40 focus-within:h-auto focus-within:w-auto bg-white overflow-hidden focus-within:p-2 focus-within:ring-1" aria-label="skip to content options"><a href="#skip-to-frontmatter" class="block px-2 py-1 text-black underline">Skip to article frontmatter</a><a href="#skip-to-article" class="block px-2 py-1 text-black underline">Skip to article content</a></div><div class="bg-white/80 backdrop-blur dark:bg-stone-900/80 shadow dark:shadow-stone-700 p-3 md:px-8 sticky w-screen top-0 z-30 h-[60px]"><nav class="flex items-center justify-between flex-nowrap max-w-[1440px] mx-auto"><div class="flex flex-row xl:min-w-[19.5rem] mr-2 sm:mr-7 justify-start items-center shrink-0"><div class="block xl:hidden"><button class="flex items-center border-stone-400 text-stone-800 hover:text-stone-900 dark:text-stone-200 hover:dark:text-stone-100"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon" width="2rem" height="2rem" class="m-1"><path fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd"></path></svg><span class="sr-only">Open Menu</span></button></div><a class="flex items-center ml-3 dark:text-white w-fit md:ml-5 xl:ml-7" href="/"><div class="p-1 mr-3 dark:bg-white dark:rounded"><img src="/build/logo-a9b043fb689eefaa7edf91e1646c46e7.png" class="h-9" height="2.25rem"/></div><span class="text-md sm:text-xl tracking-tight sm:mr-5 sr-only">Made with MyST</span></a></div><div class="flex items-center flex-grow w-auto"><div class="flex-grow hidden text-md lg:block"></div><div class="flex-grow block"></div><button type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:R3iop:" data-state="closed" class="flex items-center h-10 aspect-square sm:w-64 text-left text-gray-400 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 hover:ring-blue-500 dark:hover:ring-blue-500 hover:border-blue-500 dark:hover:border-blue-500"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon" class="p-2.5 h-10 w-10 aspect-square"><path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd"></path></svg><span class="hidden sm:block grow">Search</span><div aria-hidden="true" class="items-center hidden mx-1 font-mono text-sm text-gray-400 sm:flex gap-x-1"><kbd class="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)] dark:shadow-none hide-mac">CTRL</kbd><kbd class="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)] dark:shadow-none show-mac">⌘</kbd><kbd class="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)] dark:shadow-none ">K</kbd><script>
+;(() => {
+const script = document.currentScript;
+const root = script.parentElement;
+
+const isMac = /mac/i.test(
+      window.navigator.userAgentData?.platform ?? window.navigator.userAgent,
+    );
+root.querySelectorAll(".hide-mac").forEach(node => {node.classList.add(isMac ? "hidden" : "block")});
+root.querySelectorAll(".show-mac").forEach(node => {node.classList.add(!isMac ? "hidden" : "block")});
+})()</script></div></button><button class="theme rounded-full aspect-square border border-stone-700 dark:border-white hover:bg-neutral-100 border-solid overflow-hidden text-stone-700 dark:text-white hover:text-stone-500 dark:hover:text-neutral-800 w-8 h-8 mx-3" title="Toggle theme between light and dark mode." aria-label="Toggle theme between light and dark mode."><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon" class="h-full w-full p-0.5 hidden dark:block"><path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clip-rule="evenodd"></path></svg><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" class="h-full w-full p-0.5 dark:hidden"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"></path></svg></button><div class="block sm:hidden"></div><div class="hidden sm:block"></div></div></nav></div><div class="fixed xl:article-grid grid-gap xl:w-screen xl:pointer-events-none overflow-auto max-xl:min-w-[300px] hidden z-10" style="top:60px"><div class="pointer-events-auto xl:col-margin-left flex-col overflow-hidden hidden xl:flex"><div class="flex-grow py-6 overflow-y-auto primary-scrollbar"><nav aria-label="Navigation" class="overflow-y-hidden transition-opacity ml-3 xl:ml-0 mr-3 max-w-[350px] lg:hidden"><div class="w-full px-1 dark:text-white"></div></nav><div class="my-3 border-b-2 lg:hidden"></div><nav aria-label="Table of Contents" class="flex-grow overflow-y-hidden transition-opacity ml-3 xl:ml-0 mr-3 max-w-[350px]"><div class="w-full px-1 dark:text-white"><a title="Jose Melo" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30 font-bold" href="/">Jose Melo</a><a title="About me" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/cv">About me</a><a title="Derivative Pricing using Neural Networks" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/options-pinns">Derivative Pricing using Neural Networks</a><a title="Automatic Differentiation" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg hover:bg-slate-300/30" href="/aad">Automatic Differentiation</a><a title="Pybind11 Tutorial" aria-current="page" class="block break-words focus:outline outline-blue-200 outline-2 rounded p-2 my-1 rounded-lg bg-blue-300/30 active" href="/pybind11">Pybind11 Tutorial</a></div></nav></div><div class="flex-none py-6 transition-all duration-700 translate-y-6 opacity-0"><a class="flex mx-auto text-gray-700 w-fit hover:text-blue-700 dark:text-gray-200 dark:hover:text-blue-400" href="https://mystmd.org/made-with-myst" target="_blank" rel="noreferrer"><svg style="width:24px;height:24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" stroke="none"><g id="icon"><path fill="currentColor" d="M23.8,54.8v-3.6l4.7-0.8V17.5l-4.7-0.8V13H36l13.4,31.7h0.2l13-31.7h12.6v3.6l-4.7,0.8v32.9l4.7,0.8v3.6h-15
+          v-3.6l4.9-0.8V20.8H65L51.4,53.3h-3.8l-14-32.5h-0.1l0.2,17.4v12.1l5,0.8v3.6H23.8z"></path><path fill="#F37726" d="M47,86.9c0-5.9-3.4-8.8-10.1-8.8h-8.4c-5.2,0-9.4-1.3-12.5-3.8c-3.1-2.5-5.4-6.2-6.8-11l4.8-1.6
+          c1.8,5.6,6.4,8.6,13.8,8.8h9.2c6.4,0,10.8,2.5,13.1,7.5c2.3-5,6.7-7.5,13.1-7.5h8.4c7.8,0,12.7-2.9,14.6-8.7l4.8,1.6
+          c-1.4,4.9-3.6,8.6-6.8,11.1c-3.1,2.5-7.3,3.7-12.4,3.8H63c-6.7,0-10,2.9-10,8.8"></path></g></svg><span class="self-center ml-2 text-sm">Made with MyST</span></a></div></div></div><article class="article content article-grid grid-gap"><main class="article-grid subgrid-gap col-screen"><div class="hidden"></div><div id="skip-to-frontmatter" aria-label="article frontmatter" class="mb-8 pt-9"><div class="flex items-center h-6 mb-5 text-sm font-light"><div class="flex-grow"></div><a href="https://github.com/jmelo11/notebook" title="GitHub Repository: jmelo11/notebook" target="_blank" rel="noopener noreferrer" class="text-inherit hover:text-inherit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="1.25rem" height="1.25rem" class="inline-block mr-1 opacity-60 hover:opacity-100"><path d="M12 2.5c-5.4 0-9.8 4.4-9.8 9.7 0 4.3 2.8 8 6.7 9.2.5.1.7-.2.7-.5v-1.8c-2.4.5-3.1-.6-3.3-1.1-.1-.3-.6-1.1-1-1.4-.3-.2-.8-.6 0-.6s1.3.7 1.5 1c.9 1.5 2.3 1.1 2.8.8.1-.6.3-1.1.6-1.3-2.2-.2-4.4-1.1-4.4-4.8 0-1.1.4-1.9 1-2.6-.1-.2-.4-1.2.1-2.6 0 0 .8-.3 2.7 1 .8-.2 1.6-.3 2.4-.3.8 0 1.7.1 2.4.3 1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.5 1 2.6 0 3.7-2.3 4.6-4.4 4.8.4.3.7.9.7 1.8V21c0 .3.2.6.7.5 3.9-1.3 6.6-4.9 6.6-9.2 0-5.4-4.4-9.8-9.8-9.8z"></path></svg></a><div class="relative flex inline-block mx-1 grow-0" data-headlessui-state=""><button class="relative ml-2 -mr-1" id="headlessui-menu-button-:Rd4fop:" type="button" aria-haspopup="menu" aria-expanded="false" data-headlessui-state=""><span class="sr-only">Downloads</span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="1.25rem" height="1.25rem"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"></path></svg></button></div></div><h1 class="mb-0">Pybind11 Tutorial</h1><header class="mt-4 not-prose"><div><span class="font-semibold text-sm inline-block"><button class="focus:shadow-[0_0_0_2px] focus:shadow-black outline-none hover:underline" aria-label="Author Details" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="radix-:R3kfop:" data-state="closed">Jose Melo</button></span></div></header></div><div class="block my-10 lg:sticky lg:z-10 lg:h-0 lg:pt-0 lg:my-0 lg:ml-10 lg:col-margin-right" style="top:60px"><nav></nav></div><div id="skip-to-article"></div><div id="tmkTImmEAr" class="relative group/block article-grid subgrid-gap col-screen"><p>For some time now, our team has been developing financial applications, and we frequently encounter the need to integrate them with other tools written in different languages. While REST APIs are very useful for integration, C++ (the language we use for these tools) doesn’t offer many great integration tools. A good alternative is to translate C++ into another language and work from there. In this context, <strong>pybind11</strong> is a great option because it allows us to seamlessly migrate C++ code to Python. Below is a simple tutorial on how to use <strong>pybind11</strong> to expose C++ code in Python.</p><h2 id="tutorial-objective" class="relative group"><span class="heading-text">Tutorial Objective</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#tutorial-objective" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>The assumption here is that if we’re attempting a language migration, it’s because we want to use tools available in another language that can help our development. In this case, the core logic of our application is already implemented, and we just need a framework to easily move between languages. The beauty of <strong>pybind11</strong> is that it provides a simple framework for this purpose. There are other tools that can do the same (such as SWIG), each with its own pros and cons, but they will not be covered in this tutorial.</p><h2 id="setup" class="relative group"><span class="heading-text">Setup</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#setup" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>The first thing you need is a C++ project. I created a repository where you can find the files for this tutorial:</p><aside class="my-5 shadow-md dark:shadow-2xl dark:shadow-neutral-900 bg-gray-50/10 dark:bg-stone-800 overflow-hidden rounded border-l-4 border-green-600"><div class="m-0 font-medium py-1 flex min-w-0 text-lg text-green-600 bg-green-50 dark:bg-slate-900"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="2rem" height="2rem" class="inline-block pl-2 mr-2 self-center flex-none text-green-600"><path stroke-linecap="round" stroke-linejoin="round" d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path></svg><div class="text-neutral-900 dark:text-white grow self-center overflow-hidden break-words">See Also</div></div><div class="px-4 py-1"><p><a target="_blank" rel="noreferrer" href="https://github.com/jmelo11/pybindtutorial">https://<wbr/>github<wbr/>.com<wbr/>/jmelo11<wbr/>/pybindtutorial</a></p></div></aside><p>To run this tutorial, you need to have:</p><ul><li>A C++ compiler supporting C++11 or later.</li><li>The Python package <strong>pybind11</strong> installed (<code>pip install pybind11</code>).</li><li>CMake, which simplifies cross-platform compilation.</li></ul><h2 id="c-library" class="relative group"><span class="heading-text">C++ Library</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#c-library" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>Here’s a basic C++ library that we want to migrate to Python:</p><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-cpp" style="white-space:pre">#ifndef D3C623E9_FC36_4EEF_9ED6_46B293F1B764
+#define D3C623E9_FC36_4EEF_9ED6_46B293F1B764
+
+#include &lt;map&gt;
+
+namespace FinLib {
+
+    using Date = double;
+    using Cashflows = std::map&lt;Date, double&gt;;
+    enum Frequency { Monthly, Quarterly, Semiannual, Annual, Once };
+
+    class Bond {
+       public:
+        Bond(Date startDate, Date endDate, Frequency paymentFrequency, double notional, double couponRate);
+        Cashflows cashflows() const;
+
+       private:
+        Date startDate_, endDate_;
+        Frequency paymentFrequency_;
+        double notional_, couponRate_;
+        Cashflows cashflows_;
+    };
+
+    class Deposit : public Bond {
+       public:
+        Deposit(Date startDate, Date endDate, double notional, double rate);
+    };
+
+    inline double pv(const Cashflows&amp; cashflows, double discountRate) {
+        double pv = 0;
+        for (auto&amp; cf : cashflows) { 
+            pv += cf.second / (1 + discountRate * cf.first); 
+        }
+        return pv;
     }
-    </script>
-    <script>kernelName = 'python3'</script>
 
-                </article>
-              
+    inline double pv(const Bond&amp; bond, double discountRate) {
+        return pv(bond.cashflows(), discountRate);
+    }
 
-              
-              
-              
-              
-                <footer class="prev-next-footer d-print-none">
-                  
-<div class="prev-next-area">
-    <a class="left-prev"
-       href="aad.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Automatic Differentiation</p>
-      </div>
-    </a>
-</div>
-                </footer>
-              
-            </div>
-            
-            
-              
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+};  // namespace FinLib
 
+#endif </code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div><p>The relevant part of this script is not what it does or it’s methods, but what we want to expose in Python. In this case we have:</p><ul><li>A class <code>Bond</code> with a method <code>cashflows</code>.</li><li>A function <code>pv</code> that calculates the present value of cashflows.</li><li>In this example, we can see that the enum <code>Frequency</code> is at the root of the namespace <code>FinLib</code>.</li></ul><p>The implementation is in the file <code>mylibrary.hpp</code>, which is not relevant for this tutorial but readers can find it in the repository.</p><h2 id="module-cpp-file" class="relative group"><span class="heading-text">module.cpp file</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#module-cpp-file" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>Once our C++ library is written and working, we need to provide instructions to <strong>pybind11</strong> so that it can interpret our classes and present them in Python as desired. We do this by writing a small source file (the filename is not important).</p><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-cpp" style="white-space:pre">#include &quot;../library/mylibrary.hpp&quot;
+#include &lt;pybind11/pybind11.h&gt;
+#include &lt;pybind11/stl.h&gt;
 
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-objective">Tutorial Objective</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">Setup</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-library">C++ Library</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-cpp-file">module.cpp file</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#py-enum">py::enum_</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#py-class">py::class_</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inheritance">Inheritance</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#def">.def</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-setup-py-file">The setup.py file</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage-example">Usage Example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#results-and-conclusions">Results and Conclusions</a></li>
-</ul>
-  </nav></div>
+namespace py = pybind11;
 
-</div></div>
-              
-            
-          </div>
-          <footer class="bd-footer-content">
-            
-<div class="bd-footer-content__inner container">
-  
-  <div class="footer-item">
-    
-<p class="component-author">
-By Jose Melo
-</p>
+PYBIND11_MODULE(FinLib, m) {
+    m.doc() = &quot;Financial Library&quot;;
 
-  </div>
-  
-  <div class="footer-item">
-    
+    py::enum_&lt;FinLib::Frequency&gt;(m, &quot;Frequency&quot;)
+        .value(&quot;Monthly&quot;, FinLib::Frequency::Monthly)
+        .value(&quot;Quarterly&quot;, FinLib::Frequency::Quarterly)
+        .value(&quot;Semiannual&quot;, FinLib::Frequency::Semiannual)
+        .value(&quot;Annual&quot;, FinLib::Frequency::Annual)
+        .value(&quot;Once&quot;, FinLib::Frequency::Once)
+        .export_values();
 
-  <p class="copyright">
-    
-      © Copyright 2023.
-      <br/>
-    
-  </p>
+    py::class_&lt;FinLib::Cashflows&gt;(m, &quot;Cashflows&quot;).def(py::init&lt;&gt;());
+    py::class_&lt;FinLib::Bond&gt;(m, &quot;Bond&quot;)
+        .def(py::init&lt;FinLib::Date, FinLib::Date, FinLib::Frequency, double, double&gt;())
+        .def(&quot;cashflows&quot;, &amp;FinLib::Bond::cashflows);
 
-  </div>
-  
-  <div class="footer-item">
-    
-  </div>
-  
-  <div class="footer-item">
-    
-  </div>
-  
-</div>
-          </footer>
-        
+    py::class_&lt;FinLib::Deposit, FinLib::Bond&gt;(m, &quot;Deposit&quot;)
+        .def(py::init&lt;FinLib::Date, FinLib::Date, double, double&gt;());
 
-      </main>
-    </div>
-  </div>
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+    m.def(&quot;cashflowPV&quot;, py::overload_cast&lt;const FinLib::Cashflows&amp;, double&gt;(&amp;FinLib::pv), &quot;Calculates PV of cashflows&quot;);
+    m.def(&quot;bondPV&quot;, py::overload_cast&lt;const FinLib::Bond&amp;, double&gt;(&amp;FinLib::pv), &quot;Calculates PV of a bond&quot;);
+}</code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div><p>First, let’s highlight the include headers:</p><ul><li><p><code>include &lt;pybind11/pybind11.h&gt;</code>: In this tutorial, we install our module with setuptools, so it is not necessary to download the pybind11 repository manually. In fact, installing the Python package automatically provides the header files</p></li><li><p><code>include &lt;pybind11/stl.h&gt;</code>: To automatically convert standard library types (in our case, the map behind Cashflows), this header must be included</p></li></ul><p>The pybind11 syntax is fairly self-explanatory, but here’s a brief walkthrough. First, note that the module is contained within the <code>PYBIND11_MODULE</code> macro. Its arguments are the name we want to give our library – FinLib in this example – and a parameter of type <code>py::module_</code>, which serves as the entry point for our module.</p><aside class="my-5 shadow-md dark:shadow-2xl dark:shadow-neutral-900 bg-gray-50/10 dark:bg-stone-800 overflow-hidden rounded border-l-4 border-blue-500"><div class="m-0 font-medium py-1 flex min-w-0 text-lg text-blue-600 bg-blue-50 dark:bg-slate-900"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon" width="2rem" height="2rem" class="inline-block pl-2 mr-2 self-center flex-none text-blue-600"><path fill-rule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clip-rule="evenodd"></path></svg><div class="text-neutral-900 dark:text-white grow self-center overflow-hidden break-words">Important</div></div><div class="px-4 py-1"><p>The name of our module must be provided without quotes and must be identical to the one defined in <code>setup.py</code>, which we will cover next.</p></div></aside><h3 id="py-enum" class="relative group"><span class="heading-text">py::enum_</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#py-enum" title="Link to this Section" aria-label="Link to this Section">¶</a></h3><p>This template is used to export enumerations to Python. As template parameters, we use the same enum defined in our library. Here are some useful notes:</p><ul><li>The names we use in our definitions – not only for enums but for all pybind11 methods – do not necessarily need to match the real function names. For example, one could define:</li></ul><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-cpp" style="white-space:pre">py::enum_&lt;FinLib::Frequency&gt;(m, &quot;Frecuencia&quot;)
+      .value(&quot;Monthly&quot;, FinLib::Frequency::Monthly)
+      .value(&quot;Quarterly&quot;, FinLib::Frequency::Quarterly)
+      .value(&quot;Semiannual&quot;, FinLib::Frequency::Semiannual)
+      .value(&quot;Annual&quot;, FinLib::Frequency::Annual)
+      .value(&quot;Once&quot;, FinLib::Frequency::Once)
+      .export_values();</code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div><ul><li>When using plain enums (and not enum class), it is necessary to invoke export_values() at the end of the definition because Python requires these enums not to be implicitly convertible to other types.</li></ul><h3 id="py-class" class="relative group"><span class="heading-text">py::class_</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#py-class" title="Link to this Section" aria-label="Link to this Section">¶</a></h3><p>It is useful to discuss py::init, inheritance, and the .def method for classes, as these are central to exporting classes. py::init is the constructor for our classes. It is a template that takes the parameters of our C++ class and converts them into Python types. For successful compilation, the types must be previously defined as a class, enum, or type. You can also pass a lambda function to generate a specialized constructor. For example:</p><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-cpp" style="white-space:pre">// Specialized constructor example (hiding the previous definition as duplicate definitions are not allowed)
+py::class_&lt;FinLib::Bond&gt;(m, &quot;Bond&quot;)
+    .def(py::init&lt;&gt;([](FinLib::Date endDate, FinLib::Frequency freq, double notional, double rate) {
+        return FinLib::Bond(FinLib::Date(0), endDate, freq, notional, rate);
+    }))
+    .def(&quot;cashflows&quot;, &amp;FinLib::Bond::cashflows);</code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div><h3 id="inheritance" class="relative group"><span class="heading-text">Inheritance</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#inheritance" title="Link to this Section" aria-label="Link to this Section">¶</a></h3><p>It is also possible to define which objects inherit from others by specifying them in the template parameters of each class.</p><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-cpp" style="white-space:pre">// Base class
+py::class_&lt;FinLib::Bond&gt;(m, &quot;Bond&quot;) &lt;...&gt;
+       
+// Derived class
+py::class_&lt;FinLib::Deposit, FinLib::Bond&gt;(m, &quot;Deposit&quot;)
+    .def(py::init&lt;FinLib::Date, FinLib::Date, double, double&gt;());</code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div><p>This is practical as it saves us from writing all the base class methods in the derived class.</p><aside class="my-5 shadow-md dark:shadow-2xl dark:shadow-neutral-900 bg-gray-50/10 dark:bg-stone-800 overflow-hidden rounded border-l-4 border-blue-500"><div class="m-0 font-medium py-1 flex min-w-0 text-lg text-blue-600 bg-blue-50 dark:bg-slate-900"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon" width="2rem" height="2rem" class="inline-block pl-2 mr-2 self-center flex-none text-blue-600"><path fill-rule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clip-rule="evenodd"></path></svg><div class="text-neutral-900 dark:text-white grow self-center overflow-hidden break-words">Important</div></div><div class="px-4 py-1"><p>If we do not define the inheritance, our code will compile, but Python will not be able to associate the derived classes with the base.</p></div></aside><h3 id="id-def" class="relative group"><span class="heading-text">.def</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#id-def" title="Link to this Section" aria-label="Link to this Section">¶</a></h3><p>Finally, the .def method allows us to define functions, whether they belong to a class or are standalone (inline or static functions). A particularly interesting case is when we have overloaded functions:</p><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-cpp" style="white-space:pre">m.def(&quot;cashflowPV&quot;, py::overload_cast&lt;const FinLib::Cashflows&amp;, double&gt;(&amp;FinLib::pv), &quot;Calculates the present value of a set of cashflows&quot;);
+m.def(&quot;bondPV&quot;, py::overload_cast&lt;const FinLib::Bond&amp;, double&gt;(&amp;FinLib::pv), &quot;Calculates the present value of a bond&quot;);</code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div><p>In this case, we must provide pybind11 with the tools to determine which method to call. We do this using py::overload_cast, a function that matches based on the types of the function arguments.</p><aside class="my-5 shadow-md dark:shadow-2xl dark:shadow-neutral-900 bg-gray-50/10 dark:bg-stone-800 overflow-hidden rounded border-l-4 border-blue-500"><div class="m-0 font-medium py-1 flex min-w-0 text-lg text-blue-600 bg-blue-50 dark:bg-slate-900"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon" width="2rem" height="2rem" class="inline-block pl-2 mr-2 self-center flex-none text-blue-600"><path fill-rule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clip-rule="evenodd"></path></svg><div class="text-neutral-900 dark:text-white grow self-center overflow-hidden break-words">Important</div></div><div class="px-4 py-1"><p>Python does not support method overloading since it lacks type information to determine which function to use. Therefore, we must define the functions with different names.</p></div></aside><h2 id="the-setup-py-file" class="relative group"><span class="heading-text">The setup.py file</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#the-setup-py-file" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>This file essentially contains the instructions to compile module.cpp correctly. It is necessary to provide the header file paths and the compiled library path, just as you would in any C++ project. As mentioned at the beginning, for everything to work properly, you must also have the pybind11 library installed in Python (which you can do via pip).</p><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-python" style="white-space:pre">from pybind11.setup_helpers import Pybind11Extension, build_ext
+from setuptools import setup
+from pathlib import Path
 
-  <footer class="bd-footer">
-  </footer>
-  </body>
-</html>
+__version__ = &quot;1.0.0&quot;
+libraryName = &quot;FinLib&quot;
+LIBDIR = (Path(__file__).parent.parent / &quot;library&quot;).resolve()
+
+ext_modules = [
+    Pybind11Extension(libraryName,
+                      [&quot;module.cpp&quot;],
+                      include_dirs=[str(LIBDIR)],
+                      library_dirs=[str(LIBDIR / &quot;build&quot;)],
+                      libraries=[libraryName],
+                      define_macros=[(&#x27;VERSION_INFO&#x27;, __version__)],
+                      language=&quot;c++20&quot;
+                      ),
+]
+
+setup(
+    name=libraryName,
+    version=__version__,
+    ext_modules=ext_modules,
+    cmdclass={&quot;build_ext&quot;: build_ext},
+    python_requires=&quot;&gt;=3.7&quot;,
+)</code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div><h2 id="installation" class="relative group"><span class="heading-text">Installation</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#installation" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>With all files in hand, we begin compiling. In this case, we assume that the files come from the repository mentioned at the beginning. The commands assume the following folder structure:</p><picture class="bg-primary mb-1"><source srcSet="/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.webp" type="image/webp"/><img id="Q0iP6kNjkz" style="width:200px;margin:0 auto" src="/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.png" alt="Folder Structure" data-canonical-url="./images/folders.png"/></picture><p>The steps to install everything are as follows:</p><ol start="1"><li><p>CMake:
+Create a build directory inside the library folder and navigate to that directory in the terminal. Then execute:</p><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-bash" style="white-space:pre">cmake ..
+cmake --build . --config Release</code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div><p>This will run CMake and compile our initial library (FinLib). If everything goes well, you should see a file libFinLib.a on Mac/Linux or FinLib.lib on Windows.</p></li><li><p>Once the library is compiled, navigate to the module directory and execute from the console:</p><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-bash" style="white-space:pre">pip setup.py build --force
+pip setup.py install</code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div><p>Alternatively, you can use <code>pip install .</code>, but during development it is common to compile several times to ensure that the module is fully recompiled and that changes are reflected correctly.</p></li></ol><h2 id="usage-example" class="relative group"><span class="heading-text">Usage Example</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#usage-example" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-python" style="white-space:pre">import FinLib
+
+startDate = 0
+endDate = 5
+rate = 0.03
+notional = 100
+frequency = FinLib.Semiannual
+
+bond = FinLib.Bond(startDate, endDate, frequency, notional, rate)
+
+for date, cashflow in bond.cashflows().items():
+    print(f&quot;Date: {date}, Cashflow: {cashflow}&quot;)</code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div><h2 id="results-and-conclusions" class="relative group"><span class="heading-text">Results and Conclusions</span><a class="no-underline text-inherit hover:text-inherit px-2 font-normal select-none transition-opacity opacity-0 focus:opacity-100 group-hover:opacity-70" href="#results-and-conclusions" title="Link to this Section" aria-label="Link to this Section">¶</a></h2><p>After installing the module in Python, you should be able to run Python scripts that use the library. Below is an example with some brief commentary:</p><div class="relative group not-prose overflow-auto shadow hover:shadow-md dark:shadow-2xl dark:shadow-neutral-900 my-5 text-sm bg-stone-200/10"><pre class="block p-3 hljs" style="background-color:unset"><code class="language-python" style="white-space:pre">Copiar
+startDate = 0
+endDate = 5
+
+rate = 0.03
+notional = 100
+frequency = FinLib.Semiannual
+
+bond = FinLib.Bond(startDate, endDate, frequency, notional, rate)
+
+for date, cashflow in bond.cashflows().items():     
+    print(&#x27;Date:\t{d},  Cashflow:\t{c}&#x27;.format(d=date, c=cashflow))
+</code></pre><button title="Copy to Clipboard" class="inline-flex items-center opacity-0 group-hover:opacity-100 hover:opacity-100 focus:opacity-100 active:opacity-100 cursor-pointer ml-2 transition-color duration-200 ease-in-out text-blue-400 hover:text-blue-500 absolute right-1 top-1" aria-pressed="false" aria-label="Copy code to clipboard"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"></path></svg></button></div><picture class="bg-primary mb-1"><source srcSet="/build/output-416bebf6f4a29441fffa979aae99963b.webp" type="image/webp"/><img id="qdcbP0c46m" style="width:200px;margin:0 auto" src="/build/output-416bebf6f4a29441fffa979aae99963b.png" alt="Output" data-canonical-url="./images/output.png"/></picture><p>And that’s it! Our module is now available in a high-level language.</p><p>We have reached the end of the tutorial. As mentioned at the beginning, pybind11 is one of several tools designed to achieve interoperability between languages. For those interested in migrating between languages, I recommend exploring SWIG, which functions similarly and allows integration with languages such as C# or JavaScript, which can be useful for other applications. Additionally, you are invited to review the pybind11 documentation, as it offers other interesting features that we did not cover here, such as the ability to use Python types and libraries in C++ (the reverse of what we did here).</p></div><div></div><div class="flex pt-10 mb-10 space-x-4"><a class="flex-1 block p-4 font-normal text-gray-600 no-underline border border-gray-200 rounded shadow-sm group hover:border-blue-600 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 dark:text-gray-100 dark:border-gray-500 hover:shadow-lg dark:shadow-neutral-700" href="/aad"><div class="flex h-full align-middle"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon" width="1.5rem" height="1.5rem" class="self-center transition-transform group-hover:-translate-x-1 shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"></path></svg><div class="flex-grow text-right"><div class="text-xs text-gray-500 dark:text-gray-400">Jose Melo</div>Automatic Differentiation</div></div></a></div></main></article><script>((a,d)=>{if(!window.history.state||!window.history.state.key){let h=Math.random().toString(32).slice(2);window.history.replaceState({key:h},"")}try{let f=JSON.parse(sessionStorage.getItem(a)||"{}")[d||window.history.state.key];typeof f=="number"&&window.scrollTo(0,f)}catch(h){console.error(h),sessionStorage.removeItem(a)}})("positions", null)</script><link rel="modulepreload" href="/build/entry.client-UNPC4GT3.js"/><link rel="modulepreload" href="/build/_shared/chunk-OCTKKCIL.js"/><link rel="modulepreload" href="/build/_shared/chunk-UAI5KRM7.js"/><link rel="modulepreload" href="/build/_shared/chunk-2NH4LW52.js"/><link rel="modulepreload" href="/build/_shared/chunk-EWWD3NYG.js"/><link rel="modulepreload" href="/build/_shared/chunk-YAIQ7LUU.js"/><link rel="modulepreload" href="/build/_shared/chunk-OCWQY3HK.js"/><link rel="modulepreload" href="/build/_shared/chunk-IYS4RUT4.js"/><link rel="modulepreload" href="/build/_shared/chunk-HYMQ7M2K.js"/><link rel="modulepreload" href="/build/_shared/chunk-3CVK3PYF.js"/><link rel="modulepreload" href="/build/_shared/chunk-J6FHCSRC.js"/><link rel="modulepreload" href="/build/_shared/chunk-S4SWV34C.js"/><link rel="modulepreload" href="/build/_shared/chunk-5CFTM6YW.js"/><link rel="modulepreload" href="/build/_shared/chunk-GUCIBHGO.js"/><link rel="modulepreload" href="/build/root-EGIWHIEU.js"/><link rel="modulepreload" href="/build/_shared/chunk-H2KC2A2K.js"/><link rel="modulepreload" href="/build/routes/$-OIYBVY5B.js"/><script>window.__remixContext = {"url":"/pybind11","state":{"loaderData":{"root":{"config":{"options":{"logo":"/build/logo-a9b043fb689eefaa7edf91e1646c46e7.png"},"myst":"1.3.18","nav":[],"actions":[],"projects":[{"bibliography":["/Users/josemelo/Desktop/dev/libs/notebook/references.bib"],"exports":[],"title":"Jose Melo","authors":[{"nameParsed":{"literal":"Jose Melo","given":"Jose","family":"Melo"},"name":"Jose Melo","id":"contributors-myst-generated-uid-0"}],"github":"https://github.com/jmelo11/notebook","toc":[{"file":"intro.md"},{"file":"cv.md"},{"file":"options_pinns.ipynb"},{"file":"aad.md"},{"file":"pybind11.md"}],"index":"intro","pages":[{"slug":"cv","title":"About me","description":"","date":"","thumbnail":"/build/me-456d525b38ff082e35170e68b39cfb15.jpeg","thumbnailOptimized":"/build/me-456d525b38ff082e35170e68b39cfb15.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"options-pinns","title":"Derivative Pricing using Neural Networks","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"aad","title":"Automatic Differentiation","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"pybind11","title":"Pybind11 Tutorial","description":"","date":"","thumbnail":"/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.png","thumbnailOptimized":"/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.webp","banner":"","bannerOptimized":"","tags":[],"level":1}]}]},"CONTENT_CDN_PORT":"3100","MODE":"static"},"routes/$":{"config":{"options":{"logo":"/build/logo-a9b043fb689eefaa7edf91e1646c46e7.png"},"myst":"1.3.18","nav":[],"actions":[],"projects":[{"bibliography":["/Users/josemelo/Desktop/dev/libs/notebook/references.bib"],"exports":[],"title":"Jose Melo","authors":[{"nameParsed":{"literal":"Jose Melo","given":"Jose","family":"Melo"},"name":"Jose Melo","id":"contributors-myst-generated-uid-0"}],"github":"https://github.com/jmelo11/notebook","toc":[{"file":"intro.md"},{"file":"cv.md"},{"file":"options_pinns.ipynb"},{"file":"aad.md"},{"file":"pybind11.md"}],"index":"intro","pages":[{"slug":"cv","title":"About me","description":"","date":"","thumbnail":"/build/me-456d525b38ff082e35170e68b39cfb15.jpeg","thumbnailOptimized":"/build/me-456d525b38ff082e35170e68b39cfb15.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"options-pinns","title":"Derivative Pricing using Neural Networks","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"aad","title":"Automatic Differentiation","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"pybind11","title":"Pybind11 Tutorial","description":"","date":"","thumbnail":"/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.png","thumbnailOptimized":"/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.webp","banner":"","bannerOptimized":"","tags":[],"level":1}]}]},"page":{"kind":"Article","sha256":"87ad4fe02851cf1018661bc43d747edf1c0ed0ce080179f3593065c57cb9ee81","slug":"pybind11","location":"/pybind11.md","dependencies":[],"frontmatter":{"title":"Pybind11 Tutorial","authors":[{"id":"Jose Melo","name":"Jose Melo"}],"content_includes_title":false,"github":"https://github.com/jmelo11/notebook","thumbnail":"/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.png","thumbnailOptimized":"/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.webp","exports":[{"format":"md","filename":"pybind11.md","url":"/build/pybind11-a6697a87a55626ab9c99c9e1de69e28b.md"}]},"mdast":{"type":"root","children":[{"type":"block","children":[{"type":"paragraph","position":{"start":{"line":11,"column":1},"end":{"line":11,"column":1}},"children":[{"type":"text","value":"For some time now, our team has been developing financial applications, and we frequently encounter the need to integrate them with other tools written in different languages. While REST APIs are very useful for integration, C++ (the language we use for these tools) doesn’t offer many great integration tools. A good alternative is to translate C++ into another language and work from there. In this context, ","position":{"start":{"line":11,"column":1},"end":{"line":11,"column":1}},"key":"mv9pxCUcIr"},{"type":"strong","position":{"start":{"line":11,"column":1},"end":{"line":11,"column":1}},"children":[{"type":"text","value":"pybind11","position":{"start":{"line":11,"column":1},"end":{"line":11,"column":1}},"key":"LIv5bWF0Cc"}],"key":"WqT5FYolEF"},{"type":"text","value":" is a great option because it allows us to seamlessly migrate C++ code to Python. Below is a simple tutorial on how to use ","position":{"start":{"line":11,"column":1},"end":{"line":11,"column":1}},"key":"Hil1aTht8D"},{"type":"strong","position":{"start":{"line":11,"column":1},"end":{"line":11,"column":1}},"children":[{"type":"text","value":"pybind11","position":{"start":{"line":11,"column":1},"end":{"line":11,"column":1}},"key":"fYD20Z1umK"}],"key":"a7zvJmsOW1"},{"type":"text","value":" to expose C++ code in Python.","position":{"start":{"line":11,"column":1},"end":{"line":11,"column":1}},"key":"ymzbH9jFvh"}],"key":"h4tVyRazCG"},{"type":"heading","depth":2,"position":{"start":{"line":13,"column":1},"end":{"line":13,"column":1}},"children":[{"type":"text","value":"Tutorial Objective","position":{"start":{"line":13,"column":1},"end":{"line":13,"column":1}},"key":"tIrF9ZzL9V"}],"identifier":"tutorial-objective","label":"Tutorial Objective","html_id":"tutorial-objective","implicit":true,"key":"heFljUYSpE"},{"type":"paragraph","position":{"start":{"line":15,"column":1},"end":{"line":15,"column":1}},"children":[{"type":"text","value":"The assumption here is that if we’re attempting a language migration, it’s because we want to use tools available in another language that can help our development. In this case, the core logic of our application is already implemented, and we just need a framework to easily move between languages. The beauty of ","position":{"start":{"line":15,"column":1},"end":{"line":15,"column":1}},"key":"qoDnJKtcOF"},{"type":"strong","position":{"start":{"line":15,"column":1},"end":{"line":15,"column":1}},"children":[{"type":"text","value":"pybind11","position":{"start":{"line":15,"column":1},"end":{"line":15,"column":1}},"key":"RMlPpXT0cr"}],"key":"iLJMRYB0rU"},{"type":"text","value":" is that it provides a simple framework for this purpose. There are other tools that can do the same (such as SWIG), each with its own pros and cons, but they will not be covered in this tutorial.","position":{"start":{"line":15,"column":1},"end":{"line":15,"column":1}},"key":"fAZu71kYwH"}],"key":"aIQh7gVcOr"},{"type":"heading","depth":2,"position":{"start":{"line":17,"column":1},"end":{"line":17,"column":1}},"children":[{"type":"text","value":"Setup","position":{"start":{"line":17,"column":1},"end":{"line":17,"column":1}},"key":"w4ZzaoKRlv"}],"identifier":"setup","label":"Setup","html_id":"setup","implicit":true,"key":"VL76kXZfNz"},{"type":"paragraph","position":{"start":{"line":19,"column":1},"end":{"line":19,"column":1}},"children":[{"type":"text","value":"The first thing you need is a C++ project. I created a repository where you can find the files for this tutorial:","position":{"start":{"line":19,"column":1},"end":{"line":19,"column":1}},"key":"nbOCp37sEH"}],"key":"CG5SR451vS"},{"type":"admonition","kind":"seealso","children":[{"type":"admonitionTitle","children":[{"type":"text","value":"See Also","key":"SIpkadVVTL"}],"key":"FSI5tQehw6"},{"type":"paragraph","position":{"start":{"line":22,"column":1},"end":{"line":22,"column":1}},"children":[{"type":"link","url":"https://github.com/jmelo11/pybindtutorial","position":{"start":{"line":22,"column":1},"end":{"line":22,"column":1}},"children":[{"type":"text","value":"https://​github​.com​/jmelo11​/pybindtutorial","position":{"start":{"line":22,"column":1},"end":{"line":22,"column":1}},"key":"wABhXDIUzi"}],"urlSource":"https://github.com/jmelo11/pybindtutorial","error":true,"key":"q7lP95PwdM"}],"key":"QKukpuxHAG"}],"key":"BjJ7T32aXL"},{"type":"paragraph","position":{"start":{"line":25,"column":1},"end":{"line":25,"column":1}},"children":[{"type":"text","value":"To run this tutorial, you need to have:","position":{"start":{"line":25,"column":1},"end":{"line":25,"column":1}},"key":"PwhgXJCWq4"}],"key":"VZIExH7lVl"},{"type":"list","ordered":false,"spread":false,"position":{"start":{"line":27,"column":1},"end":{"line":30,"column":1}},"children":[{"type":"listItem","spread":true,"position":{"start":{"line":27,"column":1},"end":{"line":27,"column":1}},"children":[{"type":"text","value":"A C++ compiler supporting C++11 or later.","position":{"start":{"line":27,"column":1},"end":{"line":27,"column":1}},"key":"qpxIbIgEjO"}],"key":"UGl0FYJhzX"},{"type":"listItem","spread":true,"position":{"start":{"line":28,"column":1},"end":{"line":28,"column":1}},"children":[{"type":"text","value":"The Python package ","position":{"start":{"line":28,"column":1},"end":{"line":28,"column":1}},"key":"dKXVhpTCQ3"},{"type":"strong","position":{"start":{"line":28,"column":1},"end":{"line":28,"column":1}},"children":[{"type":"text","value":"pybind11","position":{"start":{"line":28,"column":1},"end":{"line":28,"column":1}},"key":"wTy9gZs8O7"}],"key":"eju5lMrWrf"},{"type":"text","value":" installed (","position":{"start":{"line":28,"column":1},"end":{"line":28,"column":1}},"key":"QmY1LDAWb4"},{"type":"inlineCode","value":"pip install pybind11","position":{"start":{"line":28,"column":1},"end":{"line":28,"column":1}},"key":"MR113ISOcU"},{"type":"text","value":").","position":{"start":{"line":28,"column":1},"end":{"line":28,"column":1}},"key":"xaMqYUT0PN"}],"key":"O4dSBaIsT6"},{"type":"listItem","spread":true,"position":{"start":{"line":29,"column":1},"end":{"line":30,"column":1}},"children":[{"type":"text","value":"CMake, which simplifies cross-platform compilation.","position":{"start":{"line":29,"column":1},"end":{"line":29,"column":1}},"key":"XwJzRwVieS"}],"key":"WaP6tWNey3"}],"key":"SEjcpTkVGT"},{"type":"heading","depth":2,"position":{"start":{"line":31,"column":1},"end":{"line":31,"column":1}},"children":[{"type":"text","value":"C++ Library","position":{"start":{"line":31,"column":1},"end":{"line":31,"column":1}},"key":"k5qTAUCcKN"}],"identifier":"c-library","label":"C++ Library","html_id":"c-library","implicit":true,"key":"jnb0IuwB8q"},{"type":"paragraph","position":{"start":{"line":33,"column":1},"end":{"line":33,"column":1}},"children":[{"type":"text","value":"Here’s a basic C++ library that we want to migrate to Python:","position":{"start":{"line":33,"column":1},"end":{"line":33,"column":1}},"key":"ZGsKxtNzpK"}],"key":"RFGVEFCzT3"},{"type":"code","lang":"cpp","value":"#ifndef D3C623E9_FC36_4EEF_9ED6_46B293F1B764\n#define D3C623E9_FC36_4EEF_9ED6_46B293F1B764\n\n#include \u003cmap\u003e\n\nnamespace FinLib {\n\n    using Date = double;\n    using Cashflows = std::map\u003cDate, double\u003e;\n    enum Frequency { Monthly, Quarterly, Semiannual, Annual, Once };\n\n    class Bond {\n       public:\n        Bond(Date startDate, Date endDate, Frequency paymentFrequency, double notional, double couponRate);\n        Cashflows cashflows() const;\n\n       private:\n        Date startDate_, endDate_;\n        Frequency paymentFrequency_;\n        double notional_, couponRate_;\n        Cashflows cashflows_;\n    };\n\n    class Deposit : public Bond {\n       public:\n        Deposit(Date startDate, Date endDate, double notional, double rate);\n    };\n\n    inline double pv(const Cashflows\u0026 cashflows, double discountRate) {\n        double pv = 0;\n        for (auto\u0026 cf : cashflows) { \n            pv += cf.second / (1 + discountRate * cf.first); \n        }\n        return pv;\n    }\n\n    inline double pv(const Bond\u0026 bond, double discountRate) {\n        return pv(bond.cashflows(), discountRate);\n    }\n\n};  // namespace FinLib\n\n#endif ","position":{"start":{"line":35,"column":1},"end":{"line":79,"column":1}},"key":"QvTUkRedeo"},{"type":"paragraph","position":{"start":{"line":81,"column":1},"end":{"line":81,"column":1}},"children":[{"type":"text","value":"The relevant part of this script is not what it does or it’s methods, but what we want to expose in Python. In this case we have:","position":{"start":{"line":81,"column":1},"end":{"line":81,"column":1}},"key":"AC8dqe0XMO"}],"key":"nvdkl9h4Sa"},{"type":"list","ordered":false,"spread":false,"position":{"start":{"line":83,"column":1},"end":{"line":86,"column":1}},"children":[{"type":"listItem","spread":true,"position":{"start":{"line":83,"column":1},"end":{"line":83,"column":1}},"children":[{"type":"text","value":"A class ","position":{"start":{"line":83,"column":1},"end":{"line":83,"column":1}},"key":"MH6TYqLCaR"},{"type":"inlineCode","value":"Bond","position":{"start":{"line":83,"column":1},"end":{"line":83,"column":1}},"key":"koBxN9Tf2A"},{"type":"text","value":" with a method ","position":{"start":{"line":83,"column":1},"end":{"line":83,"column":1}},"key":"J3gDmTIkxM"},{"type":"inlineCode","value":"cashflows","position":{"start":{"line":83,"column":1},"end":{"line":83,"column":1}},"key":"uB9XhFpCrO"},{"type":"text","value":".","position":{"start":{"line":83,"column":1},"end":{"line":83,"column":1}},"key":"pucHWp6cw0"}],"key":"ZHcYxBWiKI"},{"type":"listItem","spread":true,"position":{"start":{"line":84,"column":1},"end":{"line":84,"column":1}},"children":[{"type":"text","value":"A function ","position":{"start":{"line":84,"column":1},"end":{"line":84,"column":1}},"key":"RusHnrQLje"},{"type":"inlineCode","value":"pv","position":{"start":{"line":84,"column":1},"end":{"line":84,"column":1}},"key":"wYDzqcIXEK"},{"type":"text","value":" that calculates the present value of cashflows.","position":{"start":{"line":84,"column":1},"end":{"line":84,"column":1}},"key":"iLVFFLIwc4"}],"key":"Ua2FsH4Qdn"},{"type":"listItem","spread":true,"position":{"start":{"line":85,"column":1},"end":{"line":86,"column":1}},"children":[{"type":"text","value":"In this example, we can see that the enum ","position":{"start":{"line":85,"column":1},"end":{"line":85,"column":1}},"key":"WsiV6lk5Oh"},{"type":"inlineCode","value":"Frequency","position":{"start":{"line":85,"column":1},"end":{"line":85,"column":1}},"key":"ChZmOisEx9"},{"type":"text","value":" is at the root of the namespace ","position":{"start":{"line":85,"column":1},"end":{"line":85,"column":1}},"key":"Uh133eBdOQ"},{"type":"inlineCode","value":"FinLib","position":{"start":{"line":85,"column":1},"end":{"line":85,"column":1}},"key":"OCWIseW1gB"},{"type":"text","value":".","position":{"start":{"line":85,"column":1},"end":{"line":85,"column":1}},"key":"OJsLWzOQ2w"}],"key":"OIq9vlak6F"}],"key":"xbRDf4JTqi"},{"type":"paragraph","position":{"start":{"line":87,"column":1},"end":{"line":87,"column":1}},"children":[{"type":"text","value":"The implementation is in the file ","position":{"start":{"line":87,"column":1},"end":{"line":87,"column":1}},"key":"kcCYmsakV5"},{"type":"inlineCode","value":"mylibrary.hpp","position":{"start":{"line":87,"column":1},"end":{"line":87,"column":1}},"key":"SrycQ9L65P"},{"type":"text","value":", which is not relevant for this tutorial but readers can find it in the repository.","position":{"start":{"line":87,"column":1},"end":{"line":87,"column":1}},"key":"Vj9syRld0p"}],"key":"ok99880GG7"},{"type":"heading","depth":2,"position":{"start":{"line":89,"column":1},"end":{"line":89,"column":1}},"children":[{"type":"text","value":"module.cpp file","position":{"start":{"line":89,"column":1},"end":{"line":89,"column":1}},"key":"wlFgrrWVsV"}],"identifier":"module-cpp-file","label":"module.cpp file","html_id":"module-cpp-file","implicit":true,"key":"mK6OGAQc5y"},{"type":"paragraph","position":{"start":{"line":91,"column":1},"end":{"line":91,"column":1}},"children":[{"type":"text","value":"Once our C++ library is written and working, we need to provide instructions to ","position":{"start":{"line":91,"column":1},"end":{"line":91,"column":1}},"key":"ngqYApCiSZ"},{"type":"strong","position":{"start":{"line":91,"column":1},"end":{"line":91,"column":1}},"children":[{"type":"text","value":"pybind11","position":{"start":{"line":91,"column":1},"end":{"line":91,"column":1}},"key":"HM3Vo6WfVC"}],"key":"GgQvTTxOwT"},{"type":"text","value":" so that it can interpret our classes and present them in Python as desired. We do this by writing a small source file (the filename is not important).","position":{"start":{"line":91,"column":1},"end":{"line":91,"column":1}},"key":"FRZkuDp0PW"}],"key":"XIfOElytYD"},{"type":"code","lang":"cpp","value":"#include \"../library/mylibrary.hpp\"\n#include \u003cpybind11/pybind11.h\u003e\n#include \u003cpybind11/stl.h\u003e\n\nnamespace py = pybind11;\n\nPYBIND11_MODULE(FinLib, m) {\n    m.doc() = \"Financial Library\";\n\n    py::enum_\u003cFinLib::Frequency\u003e(m, \"Frequency\")\n        .value(\"Monthly\", FinLib::Frequency::Monthly)\n        .value(\"Quarterly\", FinLib::Frequency::Quarterly)\n        .value(\"Semiannual\", FinLib::Frequency::Semiannual)\n        .value(\"Annual\", FinLib::Frequency::Annual)\n        .value(\"Once\", FinLib::Frequency::Once)\n        .export_values();\n\n    py::class_\u003cFinLib::Cashflows\u003e(m, \"Cashflows\").def(py::init\u003c\u003e());\n    py::class_\u003cFinLib::Bond\u003e(m, \"Bond\")\n        .def(py::init\u003cFinLib::Date, FinLib::Date, FinLib::Frequency, double, double\u003e())\n        .def(\"cashflows\", \u0026FinLib::Bond::cashflows);\n\n    py::class_\u003cFinLib::Deposit, FinLib::Bond\u003e(m, \"Deposit\")\n        .def(py::init\u003cFinLib::Date, FinLib::Date, double, double\u003e());\n\n    m.def(\"cashflowPV\", py::overload_cast\u003cconst FinLib::Cashflows\u0026, double\u003e(\u0026FinLib::pv), \"Calculates PV of cashflows\");\n    m.def(\"bondPV\", py::overload_cast\u003cconst FinLib::Bond\u0026, double\u003e(\u0026FinLib::pv), \"Calculates PV of a bond\");\n}","position":{"start":{"line":93,"column":1},"end":{"line":122,"column":1}},"key":"g6ugLfVHXJ"},{"type":"paragraph","position":{"start":{"line":124,"column":1},"end":{"line":124,"column":1}},"children":[{"type":"text","value":"First, let’s highlight the include headers:","position":{"start":{"line":124,"column":1},"end":{"line":124,"column":1}},"key":"BowioKs3AW"}],"key":"kCwEN1Miyy"},{"type":"list","ordered":false,"spread":false,"position":{"start":{"line":126,"column":1},"end":{"line":129,"column":1}},"children":[{"type":"listItem","spread":true,"position":{"start":{"line":126,"column":1},"end":{"line":127,"column":1}},"children":[{"type":"paragraph","position":{"start":{"line":126,"column":1},"end":{"line":126,"column":1}},"children":[{"type":"inlineCode","value":"include \u003cpybind11/pybind11.h\u003e","position":{"start":{"line":126,"column":1},"end":{"line":126,"column":1}},"key":"jcf1unD9Fq"},{"type":"text","value":": In this tutorial, we install our module with setuptools, so it is not necessary to download the pybind11 repository manually. In fact, installing the Python package automatically provides the header files","position":{"start":{"line":126,"column":1},"end":{"line":126,"column":1}},"key":"s6tfEOEj1S"}],"key":"XDE4wQffW6"}],"key":"nU5zhjQT5X"},{"type":"listItem","spread":true,"position":{"start":{"line":128,"column":1},"end":{"line":129,"column":1}},"children":[{"type":"paragraph","position":{"start":{"line":128,"column":1},"end":{"line":128,"column":1}},"children":[{"type":"inlineCode","value":"include \u003cpybind11/stl.h\u003e","position":{"start":{"line":128,"column":1},"end":{"line":128,"column":1}},"key":"TP1r31eNB9"},{"type":"text","value":": To automatically convert standard library types (in our case, the map behind Cashflows), this header must be included","position":{"start":{"line":128,"column":1},"end":{"line":128,"column":1}},"key":"zNkKN9FBGQ"}],"key":"tMhTisWMBK"}],"key":"ZsiLmofeKp"}],"key":"hbSFsHShAu"},{"type":"paragraph","position":{"start":{"line":130,"column":1},"end":{"line":130,"column":1}},"children":[{"type":"text","value":"The pybind11 syntax is fairly self-explanatory, but here’s a brief walkthrough. First, note that the module is contained within the ","position":{"start":{"line":130,"column":1},"end":{"line":130,"column":1}},"key":"DgmNUD6l3Y"},{"type":"inlineCode","value":"PYBIND11_MODULE","position":{"start":{"line":130,"column":1},"end":{"line":130,"column":1}},"key":"fqvMuPz9B2"},{"type":"text","value":" macro. Its arguments are the name we want to give our library – FinLib in this example – and a parameter of type ","position":{"start":{"line":130,"column":1},"end":{"line":130,"column":1}},"key":"aPU6OUsjNk"},{"type":"inlineCode","value":"py::module_","position":{"start":{"line":130,"column":1},"end":{"line":130,"column":1}},"key":"B2YWede8Ee"},{"type":"text","value":", which serves as the entry point for our module.","position":{"start":{"line":130,"column":1},"end":{"line":130,"column":1}},"key":"D5fvStitdt"}],"key":"T6lfP3M95b"},{"type":"admonition","kind":"important","children":[{"type":"admonitionTitle","children":[{"type":"text","value":"Important","key":"IsDw2yCW4j"}],"key":"DxlEBNGoXT"},{"type":"paragraph","position":{"start":{"line":133,"column":1},"end":{"line":133,"column":1}},"children":[{"type":"text","value":"The name of our module must be provided without quotes and must be identical to the one defined in ","position":{"start":{"line":133,"column":1},"end":{"line":133,"column":1}},"key":"bOgJYD3E51"},{"type":"inlineCode","value":"setup.py","position":{"start":{"line":133,"column":1},"end":{"line":133,"column":1}},"key":"W1xxgzY1dC"},{"type":"text","value":", which we will cover next.","position":{"start":{"line":133,"column":1},"end":{"line":133,"column":1}},"key":"Hf1Zan06Lz"}],"key":"LciuOfY4vP"}],"key":"LUwNOYRmyu"},{"type":"heading","depth":3,"position":{"start":{"line":136,"column":1},"end":{"line":136,"column":1}},"children":[{"type":"text","value":"py::enum_","position":{"start":{"line":136,"column":1},"end":{"line":136,"column":1}},"key":"Q46wFQXSE2"}],"identifier":"py-enum","label":"py::enum_","html_id":"py-enum","implicit":true,"key":"K88XtpJV6c"},{"type":"paragraph","position":{"start":{"line":138,"column":1},"end":{"line":138,"column":1}},"children":[{"type":"text","value":"This template is used to export enumerations to Python. As template parameters, we use the same enum defined in our library. Here are some useful notes:","position":{"start":{"line":138,"column":1},"end":{"line":138,"column":1}},"key":"e5TTUlY7yl"}],"key":"JoOWNdRp4Z"},{"type":"list","ordered":false,"spread":false,"position":{"start":{"line":140,"column":1},"end":{"line":141,"column":1}},"children":[{"type":"listItem","spread":true,"position":{"start":{"line":140,"column":1},"end":{"line":141,"column":1}},"children":[{"type":"text","value":"The names we use in our definitions – not only for enums but for all pybind11 methods – do not necessarily need to match the real function names. For example, one could define:","position":{"start":{"line":140,"column":1},"end":{"line":140,"column":1}},"key":"YxIPHvwqAu"}],"key":"c3WpecICfv"}],"key":"EsWwdLTIYp"},{"type":"code","lang":"cpp","value":"py::enum_\u003cFinLib::Frequency\u003e(m, \"Frecuencia\")\n      .value(\"Monthly\", FinLib::Frequency::Monthly)\n      .value(\"Quarterly\", FinLib::Frequency::Quarterly)\n      .value(\"Semiannual\", FinLib::Frequency::Semiannual)\n      .value(\"Annual\", FinLib::Frequency::Annual)\n      .value(\"Once\", FinLib::Frequency::Once)\n      .export_values();","position":{"start":{"line":142,"column":1},"end":{"line":150,"column":1}},"key":"uCiGdl2EG8"},{"type":"list","ordered":false,"spread":false,"position":{"start":{"line":152,"column":1},"end":{"line":153,"column":1}},"children":[{"type":"listItem","spread":true,"position":{"start":{"line":152,"column":1},"end":{"line":153,"column":1}},"children":[{"type":"text","value":"When using plain enums (and not enum class), it is necessary to invoke export_values() at the end of the definition because Python requires these enums not to be implicitly convertible to other types.","position":{"start":{"line":152,"column":1},"end":{"line":152,"column":1}},"key":"DkabH9w0n3"}],"key":"hd9b9R8EPd"}],"key":"Wr0sKtp5JW"},{"type":"heading","depth":3,"position":{"start":{"line":154,"column":1},"end":{"line":154,"column":1}},"children":[{"type":"text","value":"py::class_","position":{"start":{"line":154,"column":1},"end":{"line":154,"column":1}},"key":"a0S4GnUgME"}],"identifier":"py-class","label":"py::class_","html_id":"py-class","implicit":true,"key":"UqqzTScGmB"},{"type":"paragraph","position":{"start":{"line":156,"column":1},"end":{"line":156,"column":1}},"children":[{"type":"text","value":"It is useful to discuss py::init, inheritance, and the .def method for classes, as these are central to exporting classes. py::init is the constructor for our classes. It is a template that takes the parameters of our C++ class and converts them into Python types. For successful compilation, the types must be previously defined as a class, enum, or type. You can also pass a lambda function to generate a specialized constructor. For example:","position":{"start":{"line":156,"column":1},"end":{"line":156,"column":1}},"key":"aiulfDsMRF"}],"key":"YR9p1YLtoN"},{"type":"code","lang":"cpp","value":"// Specialized constructor example (hiding the previous definition as duplicate definitions are not allowed)\npy::class_\u003cFinLib::Bond\u003e(m, \"Bond\")\n    .def(py::init\u003c\u003e([](FinLib::Date endDate, FinLib::Frequency freq, double notional, double rate) {\n        return FinLib::Bond(FinLib::Date(0), endDate, freq, notional, rate);\n    }))\n    .def(\"cashflows\", \u0026FinLib::Bond::cashflows);","position":{"start":{"line":158,"column":1},"end":{"line":165,"column":1}},"key":"fgfaZaC9qt"},{"type":"heading","depth":3,"position":{"start":{"line":167,"column":1},"end":{"line":167,"column":1}},"children":[{"type":"text","value":"Inheritance","position":{"start":{"line":167,"column":1},"end":{"line":167,"column":1}},"key":"zWuh4GrhgP"}],"identifier":"inheritance","label":"Inheritance","html_id":"inheritance","implicit":true,"key":"Vdt7TNtBWj"},{"type":"paragraph","position":{"start":{"line":169,"column":1},"end":{"line":169,"column":1}},"children":[{"type":"text","value":"It is also possible to define which objects inherit from others by specifying them in the template parameters of each class.","position":{"start":{"line":169,"column":1},"end":{"line":169,"column":1}},"key":"FHVPxpGX0I"}],"key":"pQq3i4See0"},{"type":"code","lang":"cpp","value":"// Base class\npy::class_\u003cFinLib::Bond\u003e(m, \"Bond\") \u003c...\u003e\n       \n// Derived class\npy::class_\u003cFinLib::Deposit, FinLib::Bond\u003e(m, \"Deposit\")\n    .def(py::init\u003cFinLib::Date, FinLib::Date, double, double\u003e());","position":{"start":{"line":171,"column":1},"end":{"line":178,"column":1}},"key":"dqPhaPEkO5"},{"type":"paragraph","position":{"start":{"line":180,"column":1},"end":{"line":180,"column":1}},"children":[{"type":"text","value":"This is practical as it saves us from writing all the base class methods in the derived class.","position":{"start":{"line":180,"column":1},"end":{"line":180,"column":1}},"key":"LDmjAHBHTh"}],"key":"Vy38spHeWk"},{"type":"admonition","kind":"important","children":[{"type":"admonitionTitle","children":[{"type":"text","value":"Important","key":"w9Fui7NnTD"}],"key":"pedbA4bFCP"},{"type":"paragraph","position":{"start":{"line":183,"column":1},"end":{"line":183,"column":1}},"children":[{"type":"text","value":"If we do not define the inheritance, our code will compile, but Python will not be able to associate the derived classes with the base.","position":{"start":{"line":183,"column":1},"end":{"line":183,"column":1}},"key":"oR2BgeO46h"}],"key":"bXGe91n4he"}],"key":"zSGu2VXoY2"},{"type":"heading","depth":3,"position":{"start":{"line":186,"column":1},"end":{"line":186,"column":1}},"children":[{"type":"text","value":".def","position":{"start":{"line":186,"column":1},"end":{"line":186,"column":1}},"key":"GqiNs8NUZk"}],"identifier":"id-def","label":".def","html_id":"id-def","implicit":true,"key":"BbFaMcjMme"},{"type":"paragraph","position":{"start":{"line":188,"column":1},"end":{"line":188,"column":1}},"children":[{"type":"text","value":"Finally, the .def method allows us to define functions, whether they belong to a class or are standalone (inline or static functions). A particularly interesting case is when we have overloaded functions:","position":{"start":{"line":188,"column":1},"end":{"line":188,"column":1}},"key":"qhLPcajkz8"}],"key":"JYHf3AYW1m"},{"type":"code","lang":"cpp","value":"m.def(\"cashflowPV\", py::overload_cast\u003cconst FinLib::Cashflows\u0026, double\u003e(\u0026FinLib::pv), \"Calculates the present value of a set of cashflows\");\nm.def(\"bondPV\", py::overload_cast\u003cconst FinLib::Bond\u0026, double\u003e(\u0026FinLib::pv), \"Calculates the present value of a bond\");","position":{"start":{"line":190,"column":1},"end":{"line":193,"column":1}},"key":"lwlq00J3Zd"},{"type":"paragraph","position":{"start":{"line":195,"column":1},"end":{"line":195,"column":1}},"children":[{"type":"text","value":"In this case, we must provide pybind11 with the tools to determine which method to call. We do this using py::overload_cast, a function that matches based on the types of the function arguments.","position":{"start":{"line":195,"column":1},"end":{"line":195,"column":1}},"key":"xCclNCxVHO"}],"key":"Q487OUWYvn"},{"type":"admonition","kind":"important","children":[{"type":"admonitionTitle","children":[{"type":"text","value":"Important","key":"skY2zCEZdz"}],"key":"mLMFGGuREv"},{"type":"paragraph","position":{"start":{"line":198,"column":1},"end":{"line":198,"column":1}},"children":[{"type":"text","value":"Python does not support method overloading since it lacks type information to determine which function to use. Therefore, we must define the functions with different names.","position":{"start":{"line":198,"column":1},"end":{"line":198,"column":1}},"key":"UHWoskpNSD"}],"key":"xyKwl2heCc"}],"key":"KSRLnTrOwv"},{"type":"heading","depth":2,"position":{"start":{"line":201,"column":1},"end":{"line":201,"column":1}},"children":[{"type":"text","value":"The setup.py file","position":{"start":{"line":201,"column":1},"end":{"line":201,"column":1}},"key":"a1VYdHJsd6"}],"identifier":"the-setup-py-file","label":"The setup.py file","html_id":"the-setup-py-file","implicit":true,"key":"ey6DFJcJqK"},{"type":"paragraph","position":{"start":{"line":203,"column":1},"end":{"line":203,"column":1}},"children":[{"type":"text","value":"This file essentially contains the instructions to compile module.cpp correctly. It is necessary to provide the header file paths and the compiled library path, just as you would in any C++ project. As mentioned at the beginning, for everything to work properly, you must also have the pybind11 library installed in Python (which you can do via pip).","position":{"start":{"line":203,"column":1},"end":{"line":203,"column":1}},"key":"MoKzq9dEUw"}],"key":"VBJrZdspuF"},{"type":"code","lang":"python","value":"from pybind11.setup_helpers import Pybind11Extension, build_ext\nfrom setuptools import setup\nfrom pathlib import Path\n\n__version__ = \"1.0.0\"\nlibraryName = \"FinLib\"\nLIBDIR = (Path(__file__).parent.parent / \"library\").resolve()\n\next_modules = [\n    Pybind11Extension(libraryName,\n                      [\"module.cpp\"],\n                      include_dirs=[str(LIBDIR)],\n                      library_dirs=[str(LIBDIR / \"build\")],\n                      libraries=[libraryName],\n                      define_macros=[('VERSION_INFO', __version__)],\n                      language=\"c++20\"\n                      ),\n]\n\nsetup(\n    name=libraryName,\n    version=__version__,\n    ext_modules=ext_modules,\n    cmdclass={\"build_ext\": build_ext},\n    python_requires=\"\u003e=3.7\",\n)","position":{"start":{"line":205,"column":1},"end":{"line":232,"column":1}},"key":"h1lE9RUerM"},{"type":"heading","depth":2,"position":{"start":{"line":234,"column":1},"end":{"line":234,"column":1}},"children":[{"type":"text","value":"Installation","position":{"start":{"line":234,"column":1},"end":{"line":234,"column":1}},"key":"KO6mnLuMk0"}],"identifier":"installation","label":"Installation","html_id":"installation","implicit":true,"key":"t1mVoQeHGv"},{"type":"paragraph","position":{"start":{"line":236,"column":1},"end":{"line":236,"column":1}},"children":[{"type":"text","value":"With all files in hand, we begin compiling. In this case, we assume that the files come from the repository mentioned at the beginning. The commands assume the following folder structure:","position":{"start":{"line":236,"column":1},"end":{"line":236,"column":1}},"key":"TXgzKbJJid"}],"key":"FIuBZf700Z"},{"type":"image","url":"/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.png","alt":"Folder Structure","class":"bg-primary mb-1","width":"200px","align":"center","key":"Q0iP6kNjkz","urlSource":"./images/folders.png","urlOptimized":"/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.webp"},{"type":"paragraph","position":{"start":{"line":245,"column":1},"end":{"line":245,"column":1}},"children":[{"type":"text","value":"The steps to install everything are as follows:","position":{"start":{"line":245,"column":1},"end":{"line":245,"column":1}},"key":"dHohSp0Dzr"}],"key":"cnMDKNDqok"},{"type":"list","ordered":true,"start":1,"spread":false,"position":{"start":{"line":247,"column":1},"end":{"line":265,"column":1}},"children":[{"type":"listItem","spread":true,"position":{"start":{"line":247,"column":1},"end":{"line":256,"column":1}},"children":[{"type":"paragraph","position":{"start":{"line":247,"column":1},"end":{"line":248,"column":1}},"children":[{"type":"text","value":"CMake:\nCreate a build directory inside the library folder and navigate to that directory in the terminal. Then execute:","position":{"start":{"line":247,"column":1},"end":{"line":247,"column":1}},"key":"r8gnrtd5Ak"}],"key":"Fr0tN7Sxje"},{"type":"code","lang":"bash","value":"cmake ..\ncmake --build . --config Release","position":{"start":{"line":250,"column":1},"end":{"line":253,"column":1}},"key":"FRJaCuTPQT"},{"type":"paragraph","position":{"start":{"line":255,"column":1},"end":{"line":255,"column":1}},"children":[{"type":"text","value":"This will run CMake and compile our initial library (FinLib). If everything goes well, you should see a file libFinLib.a on Mac/Linux or FinLib.lib on Windows.","position":{"start":{"line":255,"column":1},"end":{"line":255,"column":1}},"key":"iZVZGBhQZU"}],"key":"QCs7YuPL8Q"}],"key":"ExKZn3Yo6c"},{"type":"listItem","spread":true,"position":{"start":{"line":257,"column":1},"end":{"line":265,"column":1}},"children":[{"type":"paragraph","position":{"start":{"line":257,"column":1},"end":{"line":257,"column":1}},"children":[{"type":"text","value":"Once the library is compiled, navigate to the module directory and execute from the console:","position":{"start":{"line":257,"column":1},"end":{"line":257,"column":1}},"key":"BTwZrKwjBm"}],"key":"wUNZLc7p98"},{"type":"code","lang":"bash","value":"pip setup.py build --force\npip setup.py install","position":{"start":{"line":259,"column":1},"end":{"line":262,"column":1}},"key":"lfJOS6yFK1"},{"type":"paragraph","position":{"start":{"line":264,"column":1},"end":{"line":264,"column":1}},"children":[{"type":"text","value":"Alternatively, you can use ","position":{"start":{"line":264,"column":1},"end":{"line":264,"column":1}},"key":"YiT72px4ak"},{"type":"inlineCode","value":"pip install .","position":{"start":{"line":264,"column":1},"end":{"line":264,"column":1}},"key":"SRfZ3YXIhX"},{"type":"text","value":", but during development it is common to compile several times to ensure that the module is fully recompiled and that changes are reflected correctly.","position":{"start":{"line":264,"column":1},"end":{"line":264,"column":1}},"key":"ImcQ3mvj25"}],"key":"TvrdIYqk0B"}],"key":"hYLFOST8di"}],"key":"F2bc2krGtC"},{"type":"heading","depth":2,"position":{"start":{"line":266,"column":1},"end":{"line":266,"column":1}},"children":[{"type":"text","value":"Usage Example","position":{"start":{"line":266,"column":1},"end":{"line":266,"column":1}},"key":"hyFRLxCE1p"}],"identifier":"usage-example","label":"Usage Example","html_id":"usage-example","implicit":true,"key":"vRCU5o34Rp"},{"type":"code","lang":"python","value":"import FinLib\n\nstartDate = 0\nendDate = 5\nrate = 0.03\nnotional = 100\nfrequency = FinLib.Semiannual\n\nbond = FinLib.Bond(startDate, endDate, frequency, notional, rate)\n\nfor date, cashflow in bond.cashflows().items():\n    print(f\"Date: {date}, Cashflow: {cashflow}\")","position":{"start":{"line":268,"column":1},"end":{"line":281,"column":1}},"key":"EtkWY5LU05"},{"type":"heading","depth":2,"position":{"start":{"line":283,"column":1},"end":{"line":283,"column":1}},"children":[{"type":"text","value":"Results and Conclusions","position":{"start":{"line":283,"column":1},"end":{"line":283,"column":1}},"key":"KMZtBuLgoB"}],"identifier":"results-and-conclusions","label":"Results and Conclusions","html_id":"results-and-conclusions","implicit":true,"key":"zEQz4Jr9UT"},{"type":"paragraph","position":{"start":{"line":285,"column":1},"end":{"line":285,"column":1}},"children":[{"type":"text","value":"After installing the module in Python, you should be able to run Python scripts that use the library. Below is an example with some brief commentary:","position":{"start":{"line":285,"column":1},"end":{"line":285,"column":1}},"key":"a1zF2hgvL9"}],"key":"TWDAzOnTT9"},{"type":"code","lang":"python","value":"Copiar\nstartDate = 0\nendDate = 5\n\nrate = 0.03\nnotional = 100\nfrequency = FinLib.Semiannual\n\nbond = FinLib.Bond(startDate, endDate, frequency, notional, rate)\n\nfor date, cashflow in bond.cashflows().items():     \n    print('Date:\\t{d},  Cashflow:\\t{c}'.format(d=date, c=cashflow))\n","position":{"start":{"line":287,"column":1},"end":{"line":301,"column":1}},"key":"YtfIkzPDBC"},{"type":"image","url":"/build/output-416bebf6f4a29441fffa979aae99963b.png","alt":"Output","class":"bg-primary mb-1","width":"200px","align":"center","key":"qdcbP0c46m","urlSource":"./images/output.png","urlOptimized":"/build/output-416bebf6f4a29441fffa979aae99963b.webp"},{"type":"paragraph","position":{"start":{"line":310,"column":1},"end":{"line":310,"column":1}},"children":[{"type":"text","value":"And that’s it! Our module is now available in a high-level language.","position":{"start":{"line":310,"column":1},"end":{"line":310,"column":1}},"key":"rHaLQyB2gL"}],"key":"sQqBDauz85"},{"type":"paragraph","position":{"start":{"line":312,"column":1},"end":{"line":312,"column":1}},"children":[{"type":"text","value":"We have reached the end of the tutorial. As mentioned at the beginning, pybind11 is one of several tools designed to achieve interoperability between languages. For those interested in migrating between languages, I recommend exploring SWIG, which functions similarly and allows integration with languages such as C# or JavaScript, which can be useful for other applications. Additionally, you are invited to review the pybind11 documentation, as it offers other interesting features that we did not cover here, such as the ability to use Python types and libraries in C++ (the reverse of what we did here).","position":{"start":{"line":312,"column":1},"end":{"line":312,"column":1}},"key":"E9Vg0CxsE7"}],"key":"hE6UZ6tFdk"}],"key":"tmkTImmEAr"}],"key":"N05bqH3RGV"},"references":{"cite":{"order":[],"data":{}}},"footer":{"navigation":{"prev":{"title":"Automatic Differentiation","url":"/aad","group":"Jose Melo"}}},"domain":"http://localhost:3000"},"project":{"bibliography":["/Users/josemelo/Desktop/dev/libs/notebook/references.bib"],"exports":[],"title":"Jose Melo","authors":[{"nameParsed":{"literal":"Jose Melo","given":"Jose","family":"Melo"},"name":"Jose Melo","id":"contributors-myst-generated-uid-0"}],"github":"https://github.com/jmelo11/notebook","toc":[{"file":"intro.md"},{"file":"cv.md"},{"file":"options_pinns.ipynb"},{"file":"aad.md"},{"file":"pybind11.md"}],"index":"intro","pages":[{"slug":"cv","title":"About me","description":"","date":"","thumbnail":"/build/me-456d525b38ff082e35170e68b39cfb15.jpeg","thumbnailOptimized":"/build/me-456d525b38ff082e35170e68b39cfb15.webp","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"options-pinns","title":"Derivative Pricing using Neural Networks","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"aad","title":"Automatic Differentiation","description":"","date":"","thumbnail":"","thumbnailOptimized":"","banner":"","bannerOptimized":"","tags":[],"level":1},{"slug":"pybind11","title":"Pybind11 Tutorial","description":"","date":"","thumbnail":"/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.png","thumbnailOptimized":"/build/folders-d48459277fae0cf9bd2bd1fc3b76fae8.webp","banner":"","bannerOptimized":"","tags":[],"level":1}]}}},"actionData":null,"errors":null},"future":{"unstable_dev":false,"unstable_postcss":false,"unstable_tailwind":false,"v2_errorBoundary":true,"v2_headers":true,"v2_meta":true,"v2_normalizeFormMethod":true,"v2_routeConvention":true}};</script><script type="module" async="">import "/build/manifest-C354C50F.js";
+import * as route0 from "/build/root-EGIWHIEU.js";
+import * as route1 from "/build/routes/$-OIYBVY5B.js";
+window.__remixRouteModules = {"root":route0,"routes/$":route1};
+
+import("/build/entry.client-UNPC4GT3.js");</script></body></html>
