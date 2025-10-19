@@ -6,7 +6,7 @@ project:
   github: jmelo11/notebook
   bibliography:
     - references.bib
-  jupyter: lite
+  jupyter: true
   exports:
     - format: pdf
       template: plain_latex
