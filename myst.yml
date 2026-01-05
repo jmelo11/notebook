@@ -17,6 +17,7 @@ project:
     - file: options_pinns.ipynb
     - file: aad.md
     - file: pybind11.md
+    - file: deeponet.ipynb
 site:
   template: book-theme
   options:
