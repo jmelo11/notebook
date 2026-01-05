@@ -16,7 +16,8 @@ project:
       articles: options_pinns.ipynb
   toc:
     - file: index.md
-    - file: cv.md
+      children:
+      - file: cv.md
     - file: options_pinns.ipynb
     - file: aad.md
     - file: pybind11.md
@@ -24,5 +25,5 @@ project:
 site:
   template: book-theme
   options:
-    logo: images/logo.png
+    logo: logo.png
     analytics_google: G-Q4VQYCR70K
