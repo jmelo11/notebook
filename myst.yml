@@ -1,6 +1,9 @@
 version: 1
 project:
   title: Jose Melo
+  keywords:
+    - quantitative finance
+    - computing
   authors:
     - name: Jose Melo
   github: jmelo11/notebook
@@ -21,5 +24,5 @@ project:
 site:
   template: book-theme
   options:
-    logo: ./images/logo.png
+    logo: images/logo.png
     analytics_google: G-Q4VQYCR70K
