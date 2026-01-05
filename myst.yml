@@ -15,9 +15,8 @@ project:
       template: plain_latex
       articles: options_pinns.ipynb
   toc:
-    - file: index.md
-      children:
-      - file: cv.md
+    - file: index.md    
+    - file: cv.md
     - file: options_pinns.ipynb
     - file: aad.md
     - file: pybind11.md
