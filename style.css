@@ -1,24 +1,12 @@
-/* Make the header/top bar span the full grid width */
-:is(header, .header, .topbar, .navbar, .site-header, .myst-header, .myst-navbar) {
-  grid-column: 1 / -1;
-  width: 100%;
-  max-width: none;
-  box-sizing: border-box;
+/* Move the sidebars to the edges and extend main content */
+
+.article {
+  grid-template-columns:
+    [screen-start] 0rem
+    [page-start] 0rem
+    [body-start] 1fr
+    [body-end] 400px
+    [page-end] 0rem
+    [screen-end] !important;
 }
 
-/* MOBILE: let the top bar follow the (possibly wide) page instead of the viewport */
-@media (max-width: 1023px) {
-  :is(header, .header, .topbar, .navbar, .site-header, .myst-header, .myst-navbar) {
-    position: static !important;   /* key: not fixed */
-    left: auto !important;
-    right: auto !important;
-  }
-}
-
-/* DESKTOP: keep your “fixed” behavior only on large screens */
-@media (min-width: 1280px) {
-  :is(.xl\:col-margin-left) {
-    left: 0 !important;
-    position: fixed !important;
-  }
-}
