@@ -18,7 +18,7 @@ from utils import Swap, CurveModel, str_tenor_to_days
 
 _DEFAULT_TEMPLATE = "plotly_white"
 _DEFAULT_FONT = dict(family="Arial", size=12)
-_PLOT_WIDTH = None
+_PLOT_WIDTH = 1000
 _PLOT_HEIGHT = None
 
 def apply_style(fig: go.Figure, title: str, x_title: str, y_title: str) -> go.Figure:
