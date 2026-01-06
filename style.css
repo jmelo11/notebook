@@ -52,10 +52,3 @@ html, body {
     position: fixed !important;
   }
 }
-
-/* Prevent code blocks / long strings from forcing layout wider than screen */
-.myst-content pre,
-.myst-content code {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
