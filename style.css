@@ -1,44 +1,12 @@
-/* ===== Base: keep plots responsive everywhere (safe on mobile) ===== */
-.myst-content img,
-.myst-content svg,
-.myst-content canvas {
-  max-width: 100% !important;
-  height: auto !important;
+/* Move the sidebars to the edges and extend main content */
+
+.article {
+  grid-template-columns:
+    [screen-start] 0rem
+    [page-start] 0rem
+    [body-start] 1fr
+    [body-end] 400px
+    [page-end] 0rem
+    [screen-end] !important;
 }
 
-/* ===== Mobile/tablet: use theme defaults ===== */
-/* Hard guard in case any previous rules are still in the file/cached */
-@media (max-width: 1279px) {
-  .article {
-    grid-template-columns: revert !important;
-    margin-left: revert !important;
-  }
-
-  /* This is the one that often breaks mobile layouts */
-  .xl\:col-margin-left {
-    position: static !important;
-    left: auto !important;
-    right: auto !important;
-    width: auto !important;
-  }
-}
-
-/* ===== XL only: your custom “more space” layout ===== */
-@media (min-width: 1280px) {
-  .article {
-    grid-template-columns:
-      [screen-start] 0rem
-      [page-start] 0rem
-      [body-start] minmax(0, 1fr)
-      [body-end] 400px
-      [page-end] 0rem
-      [screen-end] !important;
-
-    margin-left: 400px;
-  }
-
-  .xl\:col-margin-left {
-    left: 0 !important;
-    position: fixed !important;
-  }
-}
