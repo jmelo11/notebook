@@ -22,8 +22,7 @@ project:
     - file: pybind11.md
     - file: deeponet.ipynb
 site:
-  template: book-theme  
+  template: article-theme  
   options:
-    hide_outline: true
     logo: logo.png
     analytics_google: G-Q4VQYCR70K
