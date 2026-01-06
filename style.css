@@ -1,0 +1,33 @@
+/* Move the sidebars to the edges and extend main content */
+
+.article {
+  grid-template-columns:
+    [screen-start] 0rem
+    [page-start] 0rem
+    [body-start] 1fr
+    [body-end] 400px
+    [page-end] 0rem
+    [screen-end] !important;
+}
+
+@media (max-width: 1023px) {
+  .article {
+    grid-template-columns:
+      [screen-start] 0rem
+      [page-start] 0rem
+      [body-start] 1fr
+      [body-end] 0rem
+      [page-end] 0rem
+      [screen-end] !important;
+  }
+}
+@media (min-width: 1280px) {
+  .article {
+    margin-left: 400px;
+  }
+}
+
+.xl\:col-margin-left {
+  left: 0 !important;
+  position: fixed !important;
+}
