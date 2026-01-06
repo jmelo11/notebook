@@ -19,5 +19,3 @@ site:
   options:
     logo: logo.png
     analytics_google: G-Q4VQYCR70K
-extends:
-  - ./deeponets/myst.yml
