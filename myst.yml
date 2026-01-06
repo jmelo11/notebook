@@ -17,6 +17,5 @@ project:
 site:
   template: book-theme 
   options:
-    hide_outline: true
     logo: logo.png
     analytics_google: G-Q4VQYCR70K
