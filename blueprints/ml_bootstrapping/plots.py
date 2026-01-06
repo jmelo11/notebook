@@ -18,7 +18,8 @@ from utils import Swap, CurveModel, str_tenor_to_days
 
 _DEFAULT_TEMPLATE = "plotly_white"
 _DEFAULT_FONT = dict(family="Arial", size=12)
-
+_PLOT_WIDTH = 1000
+_PLOT_HEIGHT = 500
 
 def apply_style(fig: go.Figure, title: str, x_title: str, y_title: str) -> go.Figure:
     fig.update_layout(
@@ -36,7 +37,7 @@ def apply_style(fig: go.Figure, title: str, x_title: str, y_title: str) -> go.Fi
     )
     fig.update_xaxes(title=x_title, showgrid=True, zeroline=False)
     fig.update_yaxes(title=y_title, showgrid=True, zeroline=False)
-    fig.update_layout(margin=dict(l=60, r=30, t=70, b=70), width=1200, height=500)
+    fig.update_layout(margin=dict(l=60, r=30, t=70, b=70), width=_PLOT_WIDTH, height=_PLOT_HEIGHT)
     return fig
 
 
@@ -289,8 +290,8 @@ def plot_swap_rates(
         bargroupgap=0.0,
         legend=dict(orientation="h", yanchor="top", y=-0.20, xanchor="left", x=0.0),
         margin=dict(l=60, r=30, t=70, b=90),
-        width=1200,
-        height=500,
+        width=_PLOT_WIDTH,
+        height=_PLOT_HEIGHT,
     )
 
     for col in (1, 2):
@@ -442,8 +443,8 @@ def plot_jacobian(
             cmid=0.0,  
             colorbar=dict(title="Δz(t) (bp)"),
         ),
-        width= 1200,
-        height=500,
+        width=_PLOT_WIDTH,
+        height=_PLOT_HEIGHT,
     )
     return fig
 
@@ -474,8 +475,8 @@ def plot_zero_sensitivity_surface_one_day(model, curves_df, date, t_vals):
             zaxis_title="Δz(t) (bp)",
         ),
         margin=dict(l=0, r=0, t=50, b=0),
-        width= 1200,
-        height=500,
+        width=_PLOT_WIDTH,
+        height=_PLOT_HEIGHT,
     )
     return fig
 
