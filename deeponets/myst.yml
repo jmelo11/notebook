@@ -1,0 +1,17 @@
+version: 1
+project:
+  title: Jose Melo
+  keywords:
+    - quantitative finance
+    - computing
+  authors:
+    - name: Jose Melo
+  github: jmelo11/notebook
+  exports:
+    - format: pdf
+      template: plain_latex
+      articles: options_pinns.ipynb
+  toc:
+    - file: deeponet.ipynb
+site:
+  template: article-theme  

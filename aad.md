@@ -106,7 +106,7 @@ $
 
 This allows us to create a computation tree, where the lower nodes represent basic functions like $h(x)$ and $u(x)$, for which we have exact derivatives.
 
-### Conclusions
+## Conclusions
 
 We've explored various techniques for computing derivatives, highlighting the importance of choosing the right one for a given problem. In finance, calculating sensitivities to market and business variables is crucial. Without an efficient method, some solutions (e.g., XVA) become impractical.
 
