@@ -12,33 +12,67 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from utils import Swap, CurveModel, str_tenor_to_days
 
-# =============================================================================
-# Styling helpers (consistent across all plots)
-# =============================================================================
 
 _DEFAULT_TEMPLATE = "plotly_white"
 _DEFAULT_FONT = dict(family="Arial", size=12)
 _PLOT_WIDTH = None
 _PLOT_HEIGHT = 500
 
-def apply_style(fig: go.Figure, title: str, x_title: str, y_title: str) -> go.Figure:
+def apply_style(
+    fig: go.Figure,
+    title: str,
+    x_title: str,
+    y_title: str,
+    *,
+    height: Optional[int] = None,
+    width: Optional[int] = None,
+    compact: bool = False,
+    legend_orientation: str = "h",
+    legend_y: Optional[float] = None,
+) -> go.Figure:
+    """Default styling + a compact mode that plays nicer in narrow columns."""
+    font = dict(_DEFAULT_FONT)
+    if compact:
+        font["size"] = 11
+
+    if legend_y is None:
+        legend_y = -0.18 if compact else -0.15
+
     fig.update_layout(
         template=_DEFAULT_TEMPLATE,
-        font=_DEFAULT_FONT,
+        font=font,
         title=dict(text=title, xanchor="left"),
         legend=dict(
-            orientation="h",
+            orientation=legend_orientation,
             yanchor="top",
-            y=-0.15,
+            y=legend_y,
             xanchor="left",
             x=0.0,
         ),
         autosize=True,
+        margin=dict(l=55, r=25, t=60, b=70) if compact else dict(l=60, r=30, t=70, b=70),
+        width=_PLOT_WIDTH if width is None else width,
+        height=_PLOT_HEIGHT if height is None else height,
     )
-    fig.update_xaxes(title=x_title, showgrid=True, zeroline=False)
-    fig.update_yaxes(title=y_title, showgrid=True, zeroline=False)
-    fig.update_layout(margin=dict(l=60, r=30, t=70, b=70), width=_PLOT_WIDTH, height=_PLOT_HEIGHT)
+    fig.update_xaxes(title=x_title, showgrid=True, zeroline=False, automargin=True)
+    fig.update_yaxes(title=y_title, showgrid=True, zeroline=False, automargin=True)
     return fig
+
+
+def _nice_tick_subset(vals: np.ndarray, labels: List[str], max_ticks: int = 10):
+    """
+    Downsample ticks (keep order) so narrow columns don't get unreadable.
+    """
+    n = len(vals)
+    if n <= max_ticks:
+        return vals.tolist(), labels
+    step = int(np.ceil(n / max_ticks))
+    idx = np.arange(0, n, step)
+    # Ensure last tick is included
+    if idx[-1] != n - 1:
+        idx = np.append(idx, n - 1)
+    return vals[idx].tolist(), [labels[i] for i in idx]
+
 
 
 def _device_dtype_from_model(model: torch.nn.Module) -> Tuple[torch.device, torch.dtype]:
@@ -202,6 +236,60 @@ def plot_instant_fwds(
 
     return fig
 
+def plot_market_swap_rates(
+    market_rates_df: pd.DataFrame,
+    *,
+    dates: Optional[List[pd.Timestamp]] = None,
+    n_samples: int = 3,
+    seed: Optional[int] = 1,
+    max_xticks: int = 10,
+    column_layout: bool = True,
+) -> Tuple[go.Figure, List[pd.Timestamp]]:
+    """
+    Plot market par swap rates for particular dates (sampled or provided),
+    designed to remain readable in a narrow column.
+    """
+    if dates is None:
+        dates = _sample_dates(market_rates_df, n=n_samples, seed=seed)
+    else:
+        dates = [pd.Timestamp(d) for d in dates]
+
+    pillar_labels = list(market_rates_df.columns)
+    tenors_years = np.array([str_tenor_to_days(c) for c in pillar_labels], dtype=float) / 360.0
+
+    tickvals, ticktext = _nice_tick_subset(tenors_years, pillar_labels, max_ticks=max_xticks)
+
+    fig = go.Figure()
+    for d in dates:
+        row = market_rates_df.loc[d].astype(float)
+        fig.add_trace(
+            go.Scatter(
+                x=tenors_years,
+                y=row.values,
+                mode="lines+markers",
+                name=str(pd.Timestamp(d).date()),
+            )
+        )
+
+    apply_style(
+        fig,
+        title="Market Swap Rates - Camara/Fix",
+        x_title="Maturity (years)",
+        y_title="Swap Rate",
+        compact=column_layout,
+        height=420 if column_layout else None,
+    )
+    fig.update_yaxes(tickformat=".2%")
+    fig.update_xaxes(
+        tickmode="array",
+        tickvals=tickvals,
+        ticktext=ticktext,
+        tickangle=-35,
+        tickfont=dict(size=11 if column_layout else 12),
+        automargin=True,
+    )
+    return fig, dates
+
 
 def plot_swap_rates(
     model,
@@ -209,6 +297,8 @@ def plot_swap_rates(
     n_samples: int = 3,
     seed: Optional[int] = None,
     mask: Optional[torch.Tensor] = None,
+    *,
+    column_layout: bool = True,
 ) -> Tuple[go.Figure, List[pd.Timestamp]]:
     device, dtype = _device_dtype_from_model(model)
     tenors = _tenors_tensor_from_df(curves_df, device=device, dtype=dtype)
@@ -217,17 +307,30 @@ def plot_swap_rates(
     swap_labels = list(curves_df.columns)
     x_cat = swap_labels  # categorical axis
 
-    fig = make_subplots(
-        rows=1, cols=2,
-        column_widths=[0.38, 0.62],
-        horizontal_spacing=0.08,
-        subplot_titles=["Model error (bp)", "Market vs model par swap rates"],
-    )
+    if column_layout:
+        fig = make_subplots(
+            rows=2, cols=1,
+            shared_xaxes=True,
+            row_heights=[0.42, 0.58],
+            vertical_spacing=0.14,
+            subplot_titles=["Model error (bp)", "Market vs model par swap rates"],
+        )
+        err_row, err_col = 1, 1
+        fit_row, fit_col = 2, 1
+    else:
+        fig = make_subplots(
+            rows=1, cols=2,
+            column_widths=[0.38, 0.62],
+            horizontal_spacing=0.08,
+            subplot_titles=["Model error (bp)", "Market vs model par swap rates"],
+        )
+        err_row, err_col = 1, 1
+        fit_row, fit_col = 1, 2
 
-    colorway = go.Figure().layout.colorway
-    if colorway is None:
-        colorway = ["#636EFA", "#EF553B", "#00CC96", "#AB63FA", "#FFA15A",
-                    "#19D3F3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"]
+    colorway = go.Figure().layout.colorway or [
+        "#636EFA", "#EF553B", "#00CC96", "#AB63FA", "#FFA15A",
+        "#19D3F3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"
+    ]
 
     date_names = [str(d.date()) for d in dates]
     date_colors = {dn: colorway[i % len(colorway)] for i, dn in enumerate(date_names)}
@@ -241,7 +344,7 @@ def plot_swap_rates(
         date_name = str(d.date())
         c = date_colors[date_name]
 
-        # Left panel
+        # Error panel
         fig.add_trace(
             go.Bar(
                 x=x_cat,
@@ -250,10 +353,10 @@ def plot_swap_rates(
                 legendgroup=date_name,
                 marker=dict(color=c),
             ),
-            row=1, col=1,
+            row=err_row, col=err_col,
         )
 
-        # Right panel
+        # Fit panel: market + model
         fig.add_trace(
             go.Scatter(
                 x=x_cat, y=obs,
@@ -264,10 +367,8 @@ def plot_swap_rates(
                 marker=dict(color=c),
                 line=dict(color=c),
             ),
-            row=1, col=2,
+            row=fit_row, col=fit_col,
         )
-
-        # Right panel
         fig.add_trace(
             go.Scatter(
                 x=x_cat, y=pred,
@@ -276,43 +377,54 @@ def plot_swap_rates(
                 legendgroup=date_name,
                 showlegend=False,
                 line=dict(color=c, dash="dash"),
-                opacity=0.6,
+                opacity=0.65,
             ),
-            row=1, col=2,
+            row=fit_row, col=fit_col,
         )
 
-    fig.update_layout(
-        template=_DEFAULT_TEMPLATE,
-        font=_DEFAULT_FONT,
-        title=dict(text="Par swap fit and errors", xanchor="left"),
-        barmode="group",
-        bargap=0.15,
-        bargroupgap=0.0,
-        legend=dict(orientation="h", yanchor="top", y=-0.20, xanchor="left", x=0.0),
-        margin=dict(l=60, r=30, t=70, b=90),
-        width=_PLOT_WIDTH,
-        height=_PLOT_HEIGHT,
-    )
+    # Axes formatting
+    # Only show x tick labels on bottom subplot when stacked
+    if column_layout:
+        fig.update_xaxes(showticklabels=False, row=1, col=1)
+        x_tick_row = 2
+        height = max(680, 240 + 220 * 2)  # stable “card” size
+        legend_y = -0.20
+    else:
+        x_tick_row = 1
+        height = _PLOT_HEIGHT
+        legend_y = -0.20
 
-    for col in (1, 2):
+    for (r, c) in [(err_row, err_col), (fit_row, fit_col)]:
         fig.update_xaxes(
             type="category",
             categoryorder="array",
             categoryarray=swap_labels,
             tickangle=-35,
-            tickfont=dict(size=12),
+            tickfont=dict(size=11),
             automargin=True,
-            title_text="Tenor",
-            row=1, col=col
+            title_text="Tenor" if (r == x_tick_row) else None,
+            row=r, col=c,
         )
 
-    fig.add_hline(y=0, line_width=1, line_color="rgba(0,0,0,0.35)", row=1, col=1)
+    fig.add_hline(y=0, line_width=1, line_color="rgba(0,0,0,0.35)", row=err_row, col=err_col)
 
-    fig.update_yaxes(title_text="Error (bp)", row=1, col=1, zeroline=False)
-    fig.update_yaxes(title_text="Par swap rate", row=1, col=2, tickformat=".2%")
+    fig.update_yaxes(title_text="Error (bp)", row=err_row, col=err_col, zeroline=False)
+    fig.update_yaxes(title_text="Par swap rate", row=fit_row, col=fit_col, tickformat=".2%")
+
+    fig.update_layout(
+        template=_DEFAULT_TEMPLATE,
+        font=dict(_DEFAULT_FONT, size=11 if column_layout else _DEFAULT_FONT["size"]),
+        title=dict(text="Par swap fit and errors", xanchor="left"),
+        barmode="group",
+        bargap=0.15,
+        bargroupgap=0.0,
+        legend=dict(orientation="h", yanchor="top", y=legend_y, xanchor="left", x=0.0),
+        margin=dict(l=55, r=25, t=60, b=90),
+        width=_PLOT_WIDTH,
+        height=height,
+    )
 
     return fig, dates
-
 
 
 def _jacobian_zero_wrt_rates(
@@ -355,15 +467,18 @@ def plot_jacobian(
     seed: Optional[int] = None,
     t_grid: Optional[np.ndarray] = None,
     dates: Optional[List[pd.Timestamp]] = None,
+    *,
+    column_layout: bool = True,
 ) -> go.Figure:
     device, dtype = _device_dtype_from_model(model)
     tenors = _tenors_tensor_from_df(curves_df, device=device, dtype=dtype)
 
     if dates is None:
         dates = _sample_dates(curves_df, n=n_samples, seed=seed)
+    n = len(dates)
 
     pillar_labels = list(curves_df.columns)
-    x_cat = pillar_labels  
+    x_cat = pillar_labels
 
     if t_grid is None:
         t_vals = tenors.detach().cpu().numpy()
@@ -373,13 +488,10 @@ def plot_jacobian(
     t_vals = np.maximum(t_vals, 1/360)
     t_torch = torch.tensor(t_vals, device=device, dtype=dtype)
 
-    Js = []
-    all_vals = []
+    Js, all_vals = [], []
     for d in dates:
-        rates_row = torch.tensor(
-            curves_df.loc[d].values, device=device, dtype=dtype)
-        J = _jacobian_zero_wrt_rates(
-            model, rates_row, tenors, t_torch, bump_bp=1.0)
+        rates_row = torch.tensor(curves_df.loc[d].values, device=device, dtype=dtype)
+        J = _jacobian_zero_wrt_rates(model, rates_row, tenors, t_torch, bump_bp=1.0)
         Js.append(J)
         all_vals.append(J.reshape(-1))
     all_vals = np.concatenate(all_vals)
@@ -388,13 +500,25 @@ def plot_jacobian(
     if not np.isfinite(zlim) or zlim == 0.0:
         zlim = 1.0
 
-    fig = make_subplots(
-        rows=1, cols=n_samples,
-        subplot_titles=[str(d.date()) for d in dates],
-        horizontal_spacing=0.06,
-    )
+    if column_layout:
+        fig = make_subplots(
+            rows=n, cols=1,
+            subplot_titles=[str(d.date()) for d in dates],
+            vertical_spacing=0.10,
+        )
+        # Column-friendly height
+        height = max(340, 220 * n + 110)
+    else:
+        fig = make_subplots(
+            rows=1, cols=n,
+            subplot_titles=[str(d.date()) for d in dates],
+            horizontal_spacing=0.06,
+        )
+        height = _PLOT_HEIGHT
 
-    for col, (d, J) in enumerate(zip(dates, Js), start=1):
+    for i, (d, J) in enumerate(zip(dates, Js), start=1):
+        r, c = (i, 1) if column_layout else (1, i)
+
         fig.add_trace(
             go.Heatmap(
                 x=x_cat,
@@ -411,40 +535,44 @@ def plot_jacobian(
                     "Δz(t)=%{z:.3f} bp (per +1bp bump)<extra></extra>"
                 ),
             ),
-            row=1, col=col
+            row=r, col=c
         )
+
+        # Hide x tick labels for all but the bottom panel when stacked
+        show_ticks = (not column_layout) or (i == n)
 
         fig.update_xaxes(
             type="category",
             categoryorder="array",
             categoryarray=pillar_labels,
             tickangle=-35,
-            tickfont=dict(size=12),
-            showgrid=True,                      
+            tickfont=dict(size=11),
+            showgrid=True,
             gridcolor="rgba(0,0,0,0.15)",
             automargin=True,
-            title_text="Input tenor",
-            row=1, col=col,
+            title_text="Input tenor" if show_ticks else None,
+            showticklabels=show_ticks,
+            row=r, col=c,
         )
         fig.update_yaxes(
             title_text="Output maturity t (years)",
-            row=1, col=col
+            row=r, col=c
         )
 
     fig.update_layout(
         template=_DEFAULT_TEMPLATE,
-        font=_DEFAULT_FONT,
-        margin=dict(l=70, r=40, t=70, b=90),
+        font=dict(_DEFAULT_FONT, size=11 if column_layout else _DEFAULT_FONT["size"]),
+        margin=dict(l=60, r=35, t=60, b=70),
         title="Jacobian: Δ zero-rate (bp) for +1bp bumps to pillar quotes",
         coloraxis=dict(
             colorscale="RdBu",
             cmin=-zlim,
             cmax=+zlim,
-            cmid=0.0,  
+            cmid=0.0,
             colorbar=dict(title="Δz(t) (bp)"),
         ),
         width=_PLOT_WIDTH,
-        height=_PLOT_HEIGHT,
+        height=height,
     )
     return fig
 
