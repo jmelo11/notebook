@@ -24,7 +24,6 @@ project:
 site:
   template: book-theme  
   options:
-    hide_toc: true
     hide_outline: true
     logo: logo.png
     analytics_google: G-Q4VQYCR70K
