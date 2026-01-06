@@ -8,13 +8,6 @@ author: "Jose Melo"
 
 # About me
 
-```{image} ./images/me.jpeg
-:alt: Me
-:class: bg-primary
-:width: 300px
-:align: center
-```
-
 Madrid, Spain  
 **Phone:** +34 614 377 868
 **Email:** [jose.pedro.melo@gmail.com](mailto:jose.pedro.melo@gmail.com)
