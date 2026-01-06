@@ -18,5 +18,6 @@ site:
   template: book-theme 
   style: ./style.css
   options:
+    hide_toc: true
     logo: logo.png
     analytics_google: G-Q4VQYCR70K
