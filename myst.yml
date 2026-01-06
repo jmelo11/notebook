@@ -16,7 +16,6 @@ project:
     - file: deeponet.ipynb
 site:
   template: book-theme 
-  style: ./style.css
   options:
     hide_outline: true
     logo: logo.png
