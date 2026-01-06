@@ -211,7 +211,7 @@ def plot_instant_fwds(
             tickmode="array",
             tickvals=pillar_years.tolist(),
             ticktext=pillar_labels,
-            tickangle=-35,
+            tickangle=-90,
             tickfont=dict(size=12),
             automargin=True,
         )
@@ -284,7 +284,7 @@ def plot_market_swap_rates(
         tickmode="array",
         tickvals=tickvals,
         ticktext=ticktext,
-        tickangle=-35,
+        tickangle=-90,
         tickfont=dict(size=11 if column_layout else 12),
         automargin=True,
     )
@@ -399,7 +399,7 @@ def plot_swap_rates(
             type="category",
             categoryorder="array",
             categoryarray=swap_labels,
-            tickangle=-35,
+            tickangle=-90,
             tickfont=dict(size=11),
             automargin=True,
             title_text="Tenor" if (r == x_tick_row) else None,
@@ -545,7 +545,7 @@ def plot_jacobian(
             type="category",
             categoryorder="array",
             categoryarray=pillar_labels,
-            tickangle=-35,
+            tickangle=-90,
             tickfont=dict(size=11),
             showgrid=True,
             gridcolor="rgba(0,0,0,0.15)",
@@ -715,7 +715,6 @@ def plot_influence_map(
 
     return fig
 
-
 def plot_interpolation_examples(
     curves_df: pd.DataFrame,
     date: Optional[pd.Timestamp] = None,
@@ -761,14 +760,13 @@ def plot_interpolation_examples(
         default_colorway = ["#636EFA", "#EF553B", "#00CC96", "#AB63FA", "#FFA15A",
                             "#19D3F3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"]
 
-    method_colors = {
-        m: default_colorway[i % len(default_colorway)]
-        for i, m in enumerate(methods)
-    }
+    method_colors = {m: default_colorway[i % len(default_colorway)] for i, m in enumerate(methods)}
 
+    # --- CHANGED: 3 rows x 1 col instead of 1 row x 3 cols ---
     fig = make_subplots(
-        rows=1, cols=3,
-        horizontal_spacing=0.07,
+        rows=3, cols=1,
+        shared_xaxes=True,
+        vertical_spacing=0.10,
         subplot_titles=[
             "Discount factors DF(t)",
             "Zero rates z(t)",
@@ -776,6 +774,7 @@ def plot_interpolation_examples(
         ],
     )
 
+    # Pillars on the DF panel (top)
     fig.add_trace(
         go.Scatter(
             x=t_pillars, y=df_pillars,
@@ -794,8 +793,9 @@ def plot_interpolation_examples(
 
         name = pretty.get(m, m)
         c = method_colors[m]
-        group = m  
+        group = m
 
+        # DF panel (row 1)
         fig.add_trace(
             go.Scatter(
                 x=t_grid, y=df_grid,
@@ -809,6 +809,7 @@ def plot_interpolation_examples(
             row=1, col=1
         )
 
+        # Zero panel (row 2)
         fig.add_trace(
             go.Scatter(
                 x=t_grid, y=z_grid,
@@ -818,9 +819,10 @@ def plot_interpolation_examples(
                 showlegend=False,
                 line=dict(color=c),
             ),
-            row=1, col=2
+            row=2, col=1
         )
 
+        # Fwd panel (row 3)
         fig.add_trace(
             go.Scatter(
                 x=t_grid, y=f_grid,
@@ -830,7 +832,7 @@ def plot_interpolation_examples(
                 showlegend=False,
                 line=dict(color=c),
             ),
-            row=1, col=3
+            row=3, col=1
         )
 
     fig.update_layout(
@@ -840,20 +842,23 @@ def plot_interpolation_examples(
         legend=dict(
             orientation="h",
             yanchor="top",
-            y=-0.18,
+            y=-0.12,          # a bit tighter since figure is taller now
             xanchor="left",
             x=0.0,
-            groupclick="togglegroup",  
+            groupclick="togglegroup",
         ),
-        margin=dict(l=60, r=30, t=70, b=70),
+        margin=dict(l=60, r=30, t=70, b=80),
+        height=820,           # column-friendly (taller)
+        width=_PLOT_WIDTH,
     )
 
-    fig.update_xaxes(title_text="Maturity (years)", row=1, col=1)
-    fig.update_xaxes(title_text="Maturity (years)", row=1, col=2)
-    fig.update_xaxes(title_text="Maturity (years)", row=1, col=3)
+    # Shared x-axis: only label the bottom plot to reduce clutter
+    fig.update_xaxes(title_text="", row=1, col=1)
+    fig.update_xaxes(title_text="", row=2, col=1)
+    fig.update_xaxes(title_text="Maturity (years)", row=3, col=1)
 
     fig.update_yaxes(title_text="DF(t)", row=1, col=1)
-    fig.update_yaxes(title_text="z(t)", tickformat=".2%", row=1, col=2)
-    fig.update_yaxes(title_text="f(t)", tickformat=".2%", row=1, col=3)
+    fig.update_yaxes(title_text="z(t)", tickformat=".2%", row=2, col=1)
+    fig.update_yaxes(title_text="f(t)", tickformat=".2%", row=3, col=1)
 
     return fig
