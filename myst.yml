@@ -9,7 +9,7 @@ project:
   github: jmelo11/notebook
   bibliography:
     - references.bib
-  jupyter: true
+  # jupyter: true
   exports:
     - format: pdf
       template: plain_latex
