@@ -16,6 +16,7 @@ project:
     - file: deeponet.ipynb
 site:
   template: book-theme 
-  options:
+  style: ./style.css
+  options:    
     logo: logo.png
     analytics_google: G-Q4VQYCR70K
