@@ -222,7 +222,6 @@ def plot_swap_rates(
         subplot_titles=["Model error (bp)", "Market vs model par swap rates"],
     )
 
-    # pick a stable color per date from Plotly's default colorway
     colorway = go.Figure().layout.colorway
     if colorway is None:
         colorway = ["#636EFA", "#EF553B", "#00CC96", "#AB63FA", "#FFA15A",
@@ -240,7 +239,7 @@ def plot_swap_rates(
         date_name = str(d.date())
         c = date_colors[date_name]
 
-        # Left panel: errors in bp (same color as right panel)
+        # Left panel
         fig.add_trace(
             go.Bar(
                 x=x_cat,
@@ -252,7 +251,7 @@ def plot_swap_rates(
             row=1, col=1,
         )
 
-        # Right panel: market (same color)
+        # Right panel
         fig.add_trace(
             go.Scatter(
                 x=x_cat, y=obs,
@@ -266,7 +265,7 @@ def plot_swap_rates(
             row=1, col=2,
         )
 
-        # Right panel: model (same color, dashed)
+        # Right panel
         fig.add_trace(
             go.Scatter(
                 x=x_cat, y=pred,
@@ -275,6 +274,7 @@ def plot_swap_rates(
                 legendgroup=date_name,
                 showlegend=False,
                 line=dict(color=c, dash="dash"),
+                opacity=0.6,
             ),
             row=1, col=2,
         )
