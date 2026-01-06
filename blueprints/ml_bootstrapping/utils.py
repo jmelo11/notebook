@@ -358,36 +358,85 @@ def long_end_loss(
     return tail_pen
 
 
-def convexity_loss(
+# def convexity_loss(
+#     model: CurveModel,
+#     rates: torch.Tensor,                  # (n_tenors,)
+#     tenors: torch.Tensor,     
+#     set_curve_kwargs: Optional[Dict[str, Any]] = None,
+# ) -> torch.Tensor:
+#     """
+#     Penalize forward rates with high second order derivative.
+#     """
+#     set_curve_kwargs = set_curve_kwargs or {}
+#     device = tenors.device
+#     dtype = tenors.dtype
+
+#     model.set_curve(rates, tenors, **set_curve_kwargs)
+
+#     t_short = torch.linspace(1/360, 1.0, 100, device=device, dtype=dtype)
+#     t_long  = torch.linspace(1.0, float(tenors.max()), 80, device=device, dtype=dtype)
+#     t = torch.cat([t_short, t_long[1:]])
+
+#     t.requires_grad_(True)
+#     log_dfs = torch.log(model.discounts(t))
+
+#     fwds = -torch.autograd.grad(log_dfs, t,
+#                                 grad_outputs=torch.ones_like(log_dfs), create_graph=True)[0]
+
+#     dfwds = torch.autograd.grad(fwds, t,
+#                                 grad_outputs=torch.ones_like(fwds), create_graph=True)[0]
+
+#     freq_pen = dfwds.pow(2)
+#     return freq_pen
+
+def spike_loss(
     model: CurveModel,
-    rates: torch.Tensor,                  # (n_tenors,)
-    tenors: torch.Tensor,     
+    rates: torch.Tensor,
+    tenors: torch.Tensor,
+    n_grid: int = 200,
+    weight: float = 1.0,
+    t_min: float = 1/360,
+    t_max: Optional[float] = None,
+    cap: float = 0.50,          # threshold for |f''| (tuned)
+    huber_delta: float = 0.10,  # smooth robustification
     set_curve_kwargs: Optional[Dict[str, Any]] = None,
 ) -> torch.Tensor:
     """
-    Penalize forward rates with high second order derivative.
+    Penalize *spikes* in instantaneous forwards by targeting large second differences of f(t).
+
+    Steps:
+      1) compute f(t) = - d/dt log DF(t) with autograd
+      2) approximate f'' with discrete second difference
+      3) apply a robust penalty only beyond a 'cap'
+
+    This allows broad curvature (humps) but discourages sharp kinks/oscillations.
     """
     set_curve_kwargs = set_curve_kwargs or {}
-    device = tenors.device
-    dtype = tenors.dtype
+    device, dtype = tenors.device, tenors.dtype
 
     model.set_curve(rates, tenors, **set_curve_kwargs)
 
-    t_short = torch.linspace(1/360, 1.0, 100, device=device, dtype=dtype)
-    t_long  = torch.linspace(1.0, float(tenors.max()), 80, device=device, dtype=dtype)
-    t = torch.cat([t_short, t_long[1:]])
+    if t_max is None:
+        t_max = float(tenors.max().detach().cpu().numpy())
 
-    t.requires_grad_(True)
-    log_dfs = torch.log(model.discounts(t))
+    t = torch.linspace(float(t_min), float(t_max), int(n_grid), device=device, dtype=dtype, requires_grad=True)
 
-    fwds = -torch.autograd.grad(log_dfs, t,
-                                grad_outputs=torch.ones_like(log_dfs), create_graph=True)[0]
+    log_df = torch.log(model.discounts(t).squeeze(-1))
 
-    dfwds = torch.autograd.grad(fwds, t,
-                                grad_outputs=torch.ones_like(fwds), create_graph=True)[0]
+    f = -torch.autograd.grad(
+        log_df, t, grad_outputs=torch.ones_like(log_df), create_graph=True
+    )[0]
 
-    freq_pen = dfwds.pow(2)
-    return freq_pen
+    dt = t[1] - t[0]
+    f2 = (f[2:] - 2.0 * f[1:-1] + f[:-2]) / (dt * dt)
+
+    excess = torch.relu(torch.abs(f2) - cap)
+
+    a = torch.abs(excess)
+    huber = torch.where(a <= huber_delta, 0.5 * a * a, huber_delta * (a - 0.5 * huber_delta))
+
+    return weight * huber.mean()
+
 
 
 def monotonicity_loss(

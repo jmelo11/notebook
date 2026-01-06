@@ -20,7 +20,7 @@ _DEFAULT_TEMPLATE = "plotly_white"
 _DEFAULT_FONT = dict(family="Arial", size=12)
 
 
-def _apply_style(fig: go.Figure, title: str, x_title: str, y_title: str) -> go.Figure:
+def apply_style(fig: go.Figure, title: str, x_title: str, y_title: str) -> go.Figure:
     fig.update_layout(
         template=_DEFAULT_TEMPLATE,
         font=_DEFAULT_FONT,
@@ -63,9 +63,6 @@ def _sample_dates(curves_df: pd.DataFrame, n: int = 3, seed: Optional[int] = Non
 
 
 def _discount_curve_on_grid(model, rates_row: torch.Tensor, tenors: torch.Tensor, t_grid: torch.Tensor) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Returns (t_np, df_np) with df(t_grid).
-    """
     model.set_curve(rates_row, tenors)
     with torch.no_grad():
         dfs = model.discounts(t_grid)
@@ -74,11 +71,6 @@ def _discount_curve_on_grid(model, rates_row: torch.Tensor, tenors: torch.Tensor
 
 
 def _instantaneous_forward_from_df(t: torch.Tensor, df: torch.Tensor) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Instantaneous forward approx:
-      f(t_i) ~= - d/dt log DF(t) via central differences.
-    Returns f at interior points (len-2).
-    """
     logdf = torch.log(df)
 
     t_np = t.detach().cpu().numpy()
@@ -92,9 +84,6 @@ def _instantaneous_forward_from_df(t: torch.Tensor, df: torch.Tensor) -> Tuple[n
 
 
 def _implied_swap_rates(model: CurveModel, rates_row: torch.Tensor, tenors: torch.Tensor, swap_labels: List[str], mask) -> np.ndarray:
-    """
-    Uses your Swap.fair_rate(model) for implied par swap rates at the df columns.
-    """
     swaps = [Swap(lbl) for lbl in swap_labels]
     model.set_curve(rates_row, tenors, mask=mask)
     with torch.no_grad():
@@ -118,7 +107,6 @@ def plot_discount_factors(
                   ) if t_max is None else float(t_max)
 
     t_grid = torch.linspace(0.0, max_t, n_grid, device=device, dtype=dtype)
-    # avoid any weird corner if someone takes log(df(0)) elsewhere
     t_grid[0] = torch.tensor(0.0, device=device, dtype=dtype)
 
     fig = go.Figure()
@@ -129,7 +117,7 @@ def plot_discount_factors(
         fig.add_trace(go.Scatter(x=t_np, y=df_np,
                       mode="lines", name=str(d.date())))
 
-    _apply_style(fig, "Discount factors (DF)",
+    apply_style(fig, "Discount factors (DF)",
                  "Maturity (years)", "DF(t)")
     return fig
 
@@ -151,13 +139,11 @@ def plot_instant_fwds(
         dates = _sample_dates(curves_df, n=n_samples, seed=seed)
 
     pillar_labels = list(curves_df.columns)
-    pillar_years = np.array([str_tenor_to_days(c)
-                            for c in pillar_labels], dtype=float) / 360.0
+    pillar_years = np.array([str_tenor_to_days(c) for c in pillar_labels], dtype=float) / 360.0
     last_pillar = float(np.max(pillar_years))
 
     max_t = last_pillar if t_max is None else float(t_max)
 
-    # start slightly above 0 to avoid issues with log / division at 0
     t_grid = torch.linspace(1e-6, max_t, n_grid, device=device, dtype=dtype)
 
     fig = go.Figure()
@@ -172,11 +158,10 @@ def plot_instant_fwds(
         t_f, f = _instantaneous_forward_from_df(t_grid, df)
         fig.add_trace(go.Scatter(x=t_f, y=f, mode="lines", name=str(d.date())))
 
-    _apply_style(fig, "Instantaneous forward rates",
+    apply_style(fig, "Instantaneous forward rates",
                  "Maturity (years)", "f(t)")
     fig.update_yaxes(tickformat=".2%")
 
-    # --- Tenor markers (vertical lines) ---
     for x in pillar_years:
         fig.add_vline(
             x=float(x),
@@ -185,9 +170,7 @@ def plot_instant_fwds(
             layer="above",
         )
 
-    # Optional: show tenor labels along the x-axis ticks (readable way)
     if show_tenor_labels:
-        # Use the pillar maturities as explicit ticks
         fig.update_xaxes(
             tickmode="array",
             tickvals=pillar_years.tolist(),
@@ -197,7 +180,6 @@ def plot_instant_fwds(
             automargin=True,
         )
 
-    # --- Extrapolation region shading ---
     if max_t > last_pillar + 1e-12:
         fig.add_vrect(
             x0=last_pillar, x1=max_t,
@@ -209,7 +191,6 @@ def plot_instant_fwds(
             annotation_position="top right",
         )
 
-        # emphasize the boundary (last pillar)
         fig.add_vline(
             x=last_pillar,
             line_width=2,
@@ -231,7 +212,7 @@ def plot_swap_rates(
     tenors = _tenors_tensor_from_df(curves_df, device=device, dtype=dtype)
 
     dates = _sample_dates(curves_df, n=n_samples, seed=seed)
-    swap_labels = list(curves_df.columns)  # e.g. ["7d","90d","180d","1y",...]
+    swap_labels = list(curves_df.columns)
     x_cat = swap_labels  # categorical axis
 
     fig = make_subplots(
@@ -241,6 +222,15 @@ def plot_swap_rates(
         subplot_titles=["Model error (bp)", "Market vs model par swap rates"],
     )
 
+    # pick a stable color per date from Plotly's default colorway
+    colorway = go.Figure().layout.colorway
+    if colorway is None:
+        colorway = ["#636EFA", "#EF553B", "#00CC96", "#AB63FA", "#FFA15A",
+                    "#19D3F3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"]
+
+    date_names = [str(d.date()) for d in dates]
+    date_colors = {dn: colorway[i % len(colorway)] for i, dn in enumerate(date_names)}
+
     for d in dates:
         obs = curves_df.loc[d].values.astype(float)
         rates_row = torch.tensor(obs, device=device, dtype=dtype)
@@ -248,19 +238,21 @@ def plot_swap_rates(
 
         err_bp = (pred - obs) * 1e4  # bp
         date_name = str(d.date())
+        c = date_colors[date_name]
 
-        # Left panel: errors in bp
+        # Left panel: errors in bp (same color as right panel)
         fig.add_trace(
             go.Bar(
                 x=x_cat,
                 y=err_bp,
                 name=f"{date_name}",
                 legendgroup=date_name,
+                marker=dict(color=c),
             ),
             row=1, col=1,
         )
 
-        # Right panel: market vs model
+        # Right panel: market (same color)
         fig.add_trace(
             go.Scatter(
                 x=x_cat, y=obs,
@@ -268,9 +260,13 @@ def plot_swap_rates(
                 name=f"{date_name} (Market)",
                 legendgroup=date_name,
                 showlegend=False,
+                marker=dict(color=c),
+                line=dict(color=c),
             ),
             row=1, col=2,
         )
+
+        # Right panel: model (same color, dashed)
         fig.add_trace(
             go.Scatter(
                 x=x_cat, y=pred,
@@ -278,25 +274,22 @@ def plot_swap_rates(
                 name=f"{date_name} (Model)",
                 legendgroup=date_name,
                 showlegend=False,
-                line=dict(dash="dash"),
+                line=dict(color=c, dash="dash"),
             ),
             row=1, col=2,
         )
 
-    # Make bars readable / not thin
     fig.update_layout(
         template=_DEFAULT_TEMPLATE,
         font=_DEFAULT_FONT,
         title=dict(text="Par swap fit and errors", xanchor="left"),
         barmode="group",
-        bargap=0.15,        # smaller -> thicker bars
+        bargap=0.15,
         bargroupgap=0.0,
-        legend=dict(orientation="h", yanchor="top",
-                    y=-0.20, xanchor="left", x=0.0),
+        legend=dict(orientation="h", yanchor="top", y=-0.20, xanchor="left", x=0.0),
         margin=dict(l=60, r=30, t=70, b=90),
     )
 
-    # Categorical x axes with consistent ordering and readable ticks
     for col in (1, 2):
         fig.update_xaxes(
             type="category",
@@ -309,15 +302,13 @@ def plot_swap_rates(
             row=1, col=col
         )
 
-    # Add a 0-line in the error panel
-    fig.add_hline(y=0, line_width=1,
-                  line_color="rgba(0,0,0,0.35)", row=1, col=1)
+    fig.add_hline(y=0, line_width=1, line_color="rgba(0,0,0,0.35)", row=1, col=1)
 
     fig.update_yaxes(title_text="Error (bp)", row=1, col=1, zeroline=False)
-    fig.update_yaxes(title_text="Par swap rate",
-                     row=1, col=2, tickformat=".2%")
+    fig.update_yaxes(title_text="Par swap rate", row=1, col=2, tickformat=".2%")
 
     return fig, dates
+
 
 
 def _jacobian_zero_wrt_rates(
@@ -328,12 +319,6 @@ def _jacobian_zero_wrt_rates(
     bump_bp: float = 1.0,
     eps_df: float = 1e-12,
 ) -> np.ndarray:
-    """
-    Returns J[k,i] = Δz(t_k) in bp for a +bump_bp bp bump to input pillar r_i.
-    z(t) = -log(DF(t))/t
-
-    Output units: bp change in zero rate per bump_bp bp input bump.
-    """
     device, dtype = tenors.device, tenors.dtype
 
     r = rates_row.detach().clone().to(device=device, dtype=dtype).requires_grad_(True)
@@ -344,18 +329,17 @@ def _jacobian_zero_wrt_rates(
     df = model.discounts(t).squeeze(-1)
     df = torch.clamp(df, min=eps_df, max=1.0)
 
-    z = -torch.log(df) / t  # (n_t,) in decimals
+    z = -torch.log(df) / t  
 
     n_t, n_in = z.numel(), r.numel()
     J = torch.empty((n_t, n_in), device=device, dtype=dtype)
 
     for k in range(n_t):
         (g,) = torch.autograd.grad(z[k], r, retain_graph=True)
-        J[k, :] = g  # dz/dr in (decimals / decimals)
+        J[k, :] = g 
 
-    # scale: input bump (bp -> decimal), output (decimal -> bp)
     bump = torch.tensor(bump_bp * 1e-4, device=device, dtype=dtype)
-    J_bp = J * bump * 1e4  # => bp change in z for bump_bp bp move in input
+    J_bp = J * bump * 1e4  
 
     return J_bp.detach().cpu().numpy()
 
@@ -375,14 +359,13 @@ def plot_jacobian(
         dates = _sample_dates(curves_df, n=n_samples, seed=seed)
 
     pillar_labels = list(curves_df.columns)
-    x_cat = pillar_labels  # categorical axis fixes spacing
+    x_cat = pillar_labels  
 
     if t_grid is None:
         t_vals = tenors.detach().cpu().numpy()
     else:
         t_vals = np.asarray(t_grid, dtype=float)
 
-    # avoid t=0 for zero-rate jacobian
     t_vals = np.maximum(t_vals, 1/360)
     t_torch = torch.tensor(t_vals, device=device, dtype=dtype)
 
@@ -433,7 +416,7 @@ def plot_jacobian(
             categoryarray=pillar_labels,
             tickangle=-35,
             tickfont=dict(size=12),
-            showgrid=True,                      # vertical tenor lines
+            showgrid=True,                      
             gridcolor="rgba(0,0,0,0.15)",
             automargin=True,
             title_text="Input tenor",
@@ -453,7 +436,7 @@ def plot_jacobian(
             colorscale="RdBu",
             cmin=-zlim,
             cmax=+zlim,
-            cmid=0.0,  # white at 0
+            cmid=0.0,  
             colorbar=dict(title="Δz(t) (bp)"),
         ),
     )
@@ -469,14 +452,12 @@ def plot_zero_sensitivity_surface_one_day(model, curves_df, date, t_vals):
     t_torch = torch.tensor(t_vals, device=device, dtype=dtype)
 
     J = _jacobian_zero_wrt_rates(
-        model, rates_row, tenors, t_torch, bump_bp=1.0)  # (n_t, n_in)
+        model, rates_row, tenors, t_torch, bump_bp=1.0)  
 
-    x_out = np.asarray(t_vals, float)                     # output maturity
-    # input pillar maturity (years)
+    x_out = np.asarray(t_vals, float)                    
     y_in = tenors.detach().cpu().numpy()
 
-    # Plotly surface wants z shape (len(y), len(x)) typically; transpose if needed
-    Z = J.T  # (n_in, n_t)
+    Z = J.T  
 
     fig = go.Figure(data=go.Surface(x=x_out, y=y_in, z=Z,
                     colorbar=dict(title="Δzero (bp)")))
@@ -493,11 +474,6 @@ def plot_zero_sensitivity_surface_one_day(model, curves_df, date, t_vals):
 
 
 def influence_share(J: np.ndarray, eps: float = 1e-16) -> np.ndarray:
-    """
-    J: (n_t, n_in) sensitivities (can be Δzero(bp) per +1bp input bump, etc.)
-    Returns W: (n_t, n_in) where each row sums to 1:
-        W[t,i] = |J[t,i]| / sum_j |J[t,j]|
-    """
     A = np.abs(J)
     denom = A.sum(axis=1, keepdims=True)
     denom = np.maximum(denom, eps)
@@ -505,11 +481,6 @@ def influence_share(J: np.ndarray, eps: float = 1e-16) -> np.ndarray:
 
 
 def signed_influence_share(J: np.ndarray, eps: float = 1e-16) -> np.ndarray:
-    """
-    Optional: keeps sign but normalizes by L1 magnitude per row.
-    Values in [-1,1], and sum of abs across pillars = 1 for each maturity t.
-        S[t,i] = J[t,i] / sum_j |J[t,j]|
-    """
     denom = np.abs(J).sum(axis=1, keepdims=True)
     denom = np.maximum(denom, eps)
     return J / denom
@@ -518,44 +489,28 @@ def signed_influence_share(J: np.ndarray, eps: float = 1e-16) -> np.ndarray:
 def plot_influence_map(
     model,
     curves_df: pd.DataFrame,
-    # function(model, rates_row, tenors, t_torch, ...) -> np.ndarray (n_t, n_in)
     n_samples: int = 3,
     seed: Optional[int] = None,
     t_grid: Optional[np.ndarray] = None,
     bump_bp: float = 1.0,
-    # False -> shares in [0,1]; True -> signed shares in [-1,1]
     signed: bool = False,
 ):
-    """
-    Plots "who drives each maturity" as a heatmap:
-      x = input pillar maturity (years)
-      y = output maturity t (years)
-      z = influence share
-          - unsigned: |J| normalized so each row sums to 1
-          - signed:   J normalized by sum(|J|) so sign is visible
-
-    jacobian_fn should return J (n_t, n_in) for a given date.
-    """
-    # --- your helpers assumed available ---
+   
     device, dtype = _device_dtype_from_model(model)
     tenors = _tenors_tensor_from_df(curves_df, device=device, dtype=dtype)
     dates = _sample_dates(curves_df, n=n_samples, seed=seed)
     pillar_labels = list(curves_df.columns)
 
-    # time grid
     if t_grid is None:
-        # IMPORTANT: don't include 0 if you're using zero-rate inside jacobian_fn
         t_vals = np.linspace(
             1/360, float(tenors.max().detach().cpu().numpy()), 201)
     else:
         t_vals = np.asarray(t_grid, dtype=float)
-        # protect against t=0 for zero-rate Jacobians
         if np.any(t_vals <= 0):
             t_vals = np.maximum(t_vals, 1/360)
 
     t_torch = torch.tensor(t_vals, device=device, dtype=dtype)
 
-    # x-axis: pillar maturity in years
     x_years = np.array([str_tenor_to_days(c)
                        for c in pillar_labels], dtype=float) / 360.0
 
@@ -565,16 +520,14 @@ def plot_influence_map(
         horizontal_spacing=0.06,
     )
 
-    # compute and add each subplot
     for col, d in enumerate(dates, start=1):
         rates_row = torch.tensor(
             curves_df.loc[d].values, device=device, dtype=dtype)
         J = _jacobian_zero_wrt_rates(model, rates_row, tenors, t_torch,
-                                     bump_bp=bump_bp)  # (n_t, n_in)
+                                     bump_bp=bump_bp)  
 
         Z = signed_influence_share(J) if signed else influence_share(J)
 
-        # fixed z range for interpretability
         if signed:
             zmin, zmax = -1.0, 1.0
             cbar_title = "Signed share"
@@ -646,11 +599,9 @@ def plot_interpolation_examples(
     date = pd.Timestamp(date)
 
     pillar_labels = list(curves_df.columns)
-    t_pillars = np.array([str_tenor_to_days(c)
-                         for c in pillar_labels], dtype=float) / 360.0
+    t_pillars = np.array([str_tenor_to_days(c) for c in pillar_labels], dtype=float) / 360.0
     s_pillars = curves_df.loc[date].values.astype(float)
 
-    # toy pillar DFs strictly > 0, t strictly > 0
     df_pillars = toy_df_pillars_from_par_swaps(t_pillars, s_pillars)
 
     if t_max is None:
@@ -659,8 +610,7 @@ def plot_interpolation_examples(
     t_grid = np.linspace(1/360, float(t_max), int(n_grid))
 
     if methods is None:
-        methods = ["log_linear_df", "linear_zero",
-                   "cubic_zero", "monotone_cubic_zero"]
+        methods = ["log_linear_df", "linear_zero", "cubic_zero", "monotone_cubic_zero"]
 
     pretty = {
         "linear_df": "Linear on DF",
@@ -670,48 +620,98 @@ def plot_interpolation_examples(
         "monotone_cubic_zero": "Monotone cubic on zero",
     }
 
+    default_colorway = go.Figure().layout.colorway
+    if default_colorway is None:
+        default_colorway = ["#636EFA", "#EF553B", "#00CC96", "#AB63FA", "#FFA15A",
+                            "#19D3F3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"]
+
+    method_colors = {
+        m: default_colorway[i % len(default_colorway)]
+        for i, m in enumerate(methods)
+    }
+
     fig = make_subplots(
         rows=1, cols=3,
         horizontal_spacing=0.07,
         subplot_titles=[
-            "Discount factors DF(t)", "Zero rates z(t)", "Instantaneous forwards f(t)"],
+            "Discount factors DF(t)",
+            "Zero rates z(t)",
+            "Instantaneous forwards f(t)",
+        ],
     )
 
-    # plot pillars
     fig.add_trace(
         go.Scatter(
             x=t_pillars, y=df_pillars,
             mode="markers",
             name="Pillars",
-            marker=dict(size=7),
+            marker=dict(size=7, color="black"),
         ),
         row=1, col=1
     )
 
-    for m in methods:
+    for rank, m in enumerate(methods):
         curve = interpolate_discount_curve(t_pillars, df_pillars, method=m)
         df_grid = curve(t_grid)
-
         z_grid = zeros_from_dfs(t_grid, df_grid)
         f_grid = instantaneous_fwd_from_df_grid(t_grid, df_grid)
 
         name = pretty.get(m, m)
+        c = method_colors[m]
+        group = m  
 
-        fig.add_trace(go.Scatter(x=t_grid, y=df_grid,
-                      mode="lines", name=name), row=1, col=1)
-        fig.add_trace(go.Scatter(x=t_grid, y=z_grid, mode="lines",
-                      name=name, showlegend=False), row=1, col=2)
-        fig.add_trace(go.Scatter(x=t_grid, y=f_grid, mode="lines",
-                      name=name, showlegend=False), row=1, col=3)
+        fig.add_trace(
+            go.Scatter(
+                x=t_grid, y=df_grid,
+                mode="lines",
+                name=name,
+                legendgroup=group,
+                showlegend=True,
+                legendrank=10 + rank,
+                line=dict(color=c),
+            ),
+            row=1, col=1
+        )
+
+        fig.add_trace(
+            go.Scatter(
+                x=t_grid, y=z_grid,
+                mode="lines",
+                name=name,
+                legendgroup=group,
+                showlegend=False,
+                line=dict(color=c),
+            ),
+            row=1, col=2
+        )
+
+        fig.add_trace(
+            go.Scatter(
+                x=t_grid, y=f_grid,
+                mode="lines",
+                name=name,
+                legendgroup=group,
+                showlegend=False,
+                line=dict(color=c),
+            ),
+            row=1, col=3
+        )
 
     fig.update_layout(
         template=_DEFAULT_TEMPLATE,
         font=_DEFAULT_FONT,
-        title=f"Interpolation choices (same pillars) — {date.date()}",
-        legend=dict(orientation="h", yanchor="top",
-                    y=-0.18, xanchor="left", x=0.0),
+        title="Interpolation choices",
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.18,
+            xanchor="left",
+            x=0.0,
+            groupclick="togglegroup",  
+        ),
         margin=dict(l=60, r=30, t=70, b=70),
     )
+
     fig.update_xaxes(title_text="Maturity (years)", row=1, col=1)
     fig.update_xaxes(title_text="Maturity (years)", row=1, col=2)
     fig.update_xaxes(title_text="Maturity (years)", row=1, col=3)
