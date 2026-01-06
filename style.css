@@ -1,53 +1,23 @@
-/* Prevent accidental horizontal overflow */
-html, body {
-  overflow-x: hidden;
+/* Make the header/top bar span the full grid width */
+:is(header, .header, .topbar, .navbar, .site-header, .myst-header, .myst-navbar) {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
 }
 
-/* Desktop: widen the main content and keep a right margin column */
-.article {
-  grid-template-columns:
-    [screen-start] 0rem
-    [page-start] 0rem
-    /* key change: minmax(0, 1fr) so it can shrink on mobile */
-    [body-start] minmax(0, 1fr)
-    /* right margin column: keep it but don't force overflow */
-    [body-end] minmax(0, 400px)
-    [page-end] 0rem
-    [screen-end] !important;
-}
-
-/* Mobile/tablet: remove the right margin column entirely */
+/* MOBILE: let the top bar follow the (possibly wide) page instead of the viewport */
 @media (max-width: 1023px) {
-  .article {
-    grid-template-columns:
-      [screen-start] 0rem
-      [page-start] 0rem
-      [body-start] minmax(0, 1fr)
-      [body-end] 0rem
-      [page-end] 0rem
-      [screen-end] !important;
-  }
-
-  /* IMPORTANT: disable the fixed margin column on small screens */
-  .xl\:col-margin-left {
-    position: static !important;
+  :is(header, .header, .topbar, .navbar, .site-header, .myst-header, .myst-navbar) {
+    position: static !important;   /* key: not fixed */
     left: auto !important;
-    width: auto !important;
+    right: auto !important;
   }
 }
 
-/* Large screens: if you want extra breathing room, prefer padding/max-width over margin-left */
+/* DESKTOP: keep your “fixed” behavior only on large screens */
 @media (min-width: 1280px) {
-  .article {
-    margin-left: 0;              /* avoid pushing the whole layout sideways */
-    padding-left: 2rem;          /* add space without causing overflow */
-    padding-right: 2rem;
-  }
-}
-
-/* If you truly want that left sidebar area fixed on XL only, gate it to XL */
-@media (min-width: 1280px) {
-  .xl\:col-margin-left {
+  :is(.xl\:col-margin-left) {
     left: 0 !important;
     position: fixed !important;
   }
